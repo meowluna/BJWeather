@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<div id="app">
+		<h1>{{title}}</h1>
+		<h2>时间：{{dateTime}}</h2>
+		<img :src="radarImg" />
+	</div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+	const app = new Vue({
+		el: "#app",
+		data: {
+			radarImg: "",
+			title: "",
+			dateTime: ""
+		},
+		async created() {
+			const res = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=12");
+			console.log(res);
+			let data = res.data.substr(1, res.data.length - 2);
+			data = JSON.parse(data);
+			this.radarImg = "http://101.200.145.109:8087/qxj/" + data[0].fileName;
+			this.title = data[0].title;
+			this.dateTime = data[0].datetime;
+		}
+	})
+</script>
+
+</html>
