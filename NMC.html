@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css" />
+</head>
+
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-appbar-with-tab mdui-theme-accent-pink">
+	<div class="mdui-appbar mdui-appbar-fixed">
+		<div class="mdui-toolbar mdui-color-theme">
+			<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#left-drawer'}">
+				<i class="mdui-icon material-icons">menu</i>
+			</a>
+			<a href="javascript:;" class="mdui-typo-title">中央气象台(stationid:54511)</a>
+			<div class="mdui-toolbar-spacer"></div>
+			<a href="javascript:;" class="mdui-btn mdui-btn-icon">
+				<i class="mdui-icon material-icons">search</i>
+			</a>
+			<a href="javascript:;" class="mdui-btn mdui-btn-icon">
+				<i class="mdui-icon material-icons">refresh</i>
+			</a>
+			<a href="javascript:;" class="mdui-btn mdui-btn-icon">
+				<i class="mdui-icon material-icons">more_vert</i>
+			</a>
+		</div>
+		<div class="mdui-tab mdui-color-white" mdui-tab>
+			<a href="#tab1" class="mdui-ripple">now</a>
+			<a href="#tab2" class="mdui-ripple">雷达图</a>
+		</div>
+	</div>
+	<div id="NMC">
+		<div id="tab1" class="mdui-p-a-2">
+			<h2>当前天气(发布时间{{current.publish_time}}):</h2>
+			<ul>
+				<li>天气：{{current.weather.info}}</li>
+				<li>气温：{{current.weather.temperature}}℃</li>
+				<li>风力：{{current.wind.power}}</li>
+				<li>风速：{{current.wind.speed}}m/s</li>
+				<li>风向：{{current.wind.direct}} {{current.wind.degree}}°</li>
+				<li>气压：{{current.weather.airpressure}}hPa</li>
+				<li>相对湿度：{{current.weather.humidity}}%</li>
+				<li>AQI：{{currentAQI.aqi}} {{currentAQI.text}}</li>
+			</ul>
+		</div>
+		<div id="tab2" class="mdui-p-a-2">
+			<h2>华北雷达图:</h2>
+			<img :src="radar.img" />
+		</div>
+	</div>
+	<div class="mdui-drawer mdui-drawer-close" id="left-drawer">
+		<ul class="mdui-list">
+			<li class="mdui-list-item mdui-ripple">
+				<i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
+				<a class="mdui-list-item-content" href="./BMS.html">BMS</a>
+			</li>
+			<li class="mdui-list-item mdui-ripple  mdui-list-item-active">
+				<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
+				<a class="mdui-list-item-content">NMC</a>
+			</li>
+		</ul>
+		<button class="mdui-btn mdui-color-theme-accent mdui-ripple" mdui-drawer-close>close</button>
+	</div>
+
+	<script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+	const NMC = new Vue({
+		el: "#NMC",
+		data: {
+			current: {
+				weather: {},
+				wind: {},
+			},
+			radar: {},
+			currentAQI: "",
+		},
+		async created() {
+			const forecastRes = await axios.get("http://www.nmc.cn/rest/weather?stationid=54511");
+			console.log("天气预报：", forecastRes);
+			let forecastData = forecastRes.data.data;
+			//当前天气
+			this.current = forecastData.real;
+			this.currentAQI = forecastData.air;
+			console.log("当前天气：", this.current.weather);
+			//雷达图
+			let radarData = forecastData.radar;
+			console.log("雷达图：", radarData);
+			this.radar = {
+				img: "//image.nmc.cn" + radarData.image,
+			}
+		}
+	});
+</script>
+
+</html>

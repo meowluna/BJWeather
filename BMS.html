@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet" type="text/css">
+	<link href="https://cdn.jsdelivr.net/npm/quasar@1.20.2/dist/quasar.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	<div id="BMS">
+
+		<!--  -->
+		<div>
+			<h2>当前天气(发布时间{{current.datetime}}):</h2>
+			<ul>
+				<li>天气：{{current.weather}}</li>
+				<li>气温：{{current.temperature}}℃</li>
+				<li>风速：{{current.windspeed}}m/s</li>
+				<li>风向：{{current.winddirection}}</li>
+				<li>气压：{{current.airpressure}}hPa</li>
+				<li>相对湿度：{{current.humidity}}%</li>
+			</ul>
+		</div>
+		<div>
+			<h2>3小时预报(发布时间{{threeHours.datetime}}):</h2>
+			<ul>
+				<li v-for="(item,index) in threeHours.value" :key="item.hour">{{index}}：天气：{{item.wp}}
+					气温：{{item.t}}℃
+					风力：{{item.wspeed}} 风向：{{item.wdir}}</li>
+			</ul>
+		</div>
+		<div>
+			<h2>36小时预报(发布时间{{thirtysixHours.datetime}}):</h2>
+			<ul>
+				<li v-for="(item,index) in thirtysixHours.value" :key="item.lv">
+					{{item.date}}：天气：{{item.weather}}
+					气温：{{item.plain_temp}}
+					风力：{{item.windspeed}} 风向：{{item.wind}} 相对湿度：{{item.other}}</li>
+			</ul>
+		</div>
+		<div>
+			<h2>{{radar.title}}(发布时间{{radar.datetime}}):</h2>
+			<img :src="radar.img" />
+		</div>
+
+
+	</div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14"></script>
+<script src="https://cdn.jsdelivr.net/npm/quasar@1.20.2/dist/quasar.umd.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+	const BMS = new Vue({
+		el: "#BMS",
+		data: {
+			current: {},
+			radar: {},
+			threeHours: {},
+			thirtysixHours: {},
+		},
+		async created() {
+			const forecastRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=11");
+			console.log("天气预报：", forecastRes);
+			let forecastData = forecastRes.data.substr(1, forecastRes.data.length - 2);
+			forecastData = JSON.parse(forecastData);
+			//当前天气
+			let current = JSON.parse(forecastData.Scene).value;
+			console.log(current);
+			this.current = {
+				datetime: JSON.parse(forecastData.Scene).datetime,
+				weather: current.name,
+				temperature: current.wendu,
+				windspeed: current.fengl,
+				winddirection: current.fengx,
+				airpressure: current.qiya,
+				humidity: current.shidu,
+			}
+			//3小时
+			this.threeHours = JSON.parse(forecastData.ThreeHours);
+			console.log(this.threeHours);
+			//36小时
+			this.thirtysixHours = JSON.parse(forecastData.thirtysix);
+			console.log(this.thirtysixHours);
+			//雷达图
+			const radarRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=12");
+			console.log("雷达图：", radarRes);
+			let radarData = radarRes.data.substr(1, radarRes.data.length - 2);
+			radarData = JSON.parse(radarData);
+			this.radar = {
+				img: "http://101.200.145.109:8087/qxj/" + radarData[0].fileName,
+				title: radarData[0].title,
+				datetime: radarData[0].datetime
+			};
+		},
+	});
+
+</script>
+
+</html>
