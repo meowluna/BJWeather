@@ -5,18 +5,44 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
-	<link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet" type="text/css">
-	<link href="https://cdn.jsdelivr.net/npm/quasar@1.20.2/dist/quasar.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css" />
+	<link rel="stylesheet" href="./mdui.css" />
 </head>
 
-<body>
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-white mdui-appbar-with-tab mdui-theme-accent-pink ">
+	<div class="mdui-appbar mdui-appbar-fixed  mdui-color-white">
+		<div class="mdui-toolbar">
+			<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#left-drawer'}"><i
+					class="mdui-icon material-icons">menu</i>
+			</a>
+			<a href="javascript:;" class="mdui-typo-headline">BJWeather</a>
+			<a href="javascript:;" class="mdui-typo-title">北京气象台(stationid:54511)</a>
+			<div class="mdui-toolbar-spacer"></div>
+			<a href="javascript:;" class="mdui-btn mdui-btn-icon">
+				<i class="mdui-icon material-icons" onclick="location.reload()">refresh</i>
+			</a>
+			<a href="javascript:;" class="mdui-btn mdui-btn-icon">
+				<i class="mdui-icon material-icons">more_vert</i>
+			</a>
+		</div>
+		<div class="mdui-tab mdui-color-white" mdui-tab>
+			<a href="#tab1" class="mdui-ripple">当前</a>
+			<a href="#tab2" class="mdui-ripple">3h预报</a>
+			<a href="#tab3" class="mdui-ripple">36h预报</a>
+			<a href="#tab4" class="mdui-ripple">雷达图</a>
+		</div>
+	</div>
 	<div id="BMS">
 
-		<!--  -->
-		<div>
-			<h2>当前天气(发布时间{{current.datetime}}):</h2>
+		<div id="tab1" class="mdui-p-a-2">
+			<select class="mdui-select" id="ddd" v-model="distrect" @change="getDistrectInfo()">
+				<option :value=item.name v-for="(item,index) in distrectData.value">{{item.name}}</option>
+			</select>
+
+
+			<h3>当前天气(发布时间{{current.datetime}}):</h3>
 			<ul>
-				<li>天气：{{current.weather}}</li>
+				<li v-show="this.current.weather">天气：{{current.weather}}</li>
 				<li>气温：{{current.temperature}}℃</li>
 				<li>风速：{{current.windspeed}}m/s</li>
 				<li>风向：{{current.winddirection}}</li>
@@ -24,16 +50,16 @@
 				<li>相对湿度：{{current.humidity}}%</li>
 			</ul>
 		</div>
-		<div>
-			<h2>3小时预报(发布时间{{threeHours.datetime}}):</h2>
+		<div id="tab2" class="mdui-p-a-2">
+			<h3>3小时预报(发布时间{{threeHours.datetime}}):</h3>
 			<ul>
 				<li v-for="(item,index) in threeHours.value" :key="item.hour">{{index}}：天气：{{item.wp}}
 					气温：{{item.t}}℃
 					风力：{{item.wspeed}} 风向：{{item.wdir}}</li>
 			</ul>
 		</div>
-		<div>
-			<h2>36小时预报(发布时间{{thirtysixHours.datetime}}):</h2>
+		<div id="tab3" class="mdui-p-a-2">
+			<h3>36小时预报(发布时间{{thirtysixHours.datetime}}):</h3>
 			<ul>
 				<li v-for="(item,index) in thirtysixHours.value" :key="item.lv">
 					{{item.date}}：天气：{{item.weather}}
@@ -41,16 +67,31 @@
 					风力：{{item.windspeed}} 风向：{{item.wind}} 相对湿度：{{item.other}}</li>
 			</ul>
 		</div>
-		<div>
-			<h2>{{radar.title}}(发布时间{{radar.datetime}}):</h2>
-			<img :src="radar.img" />
+		<div id="tab4" class="mdui-p-a-2">
+			<h3>{{radar.title}}(发布时间{{radar.datetime}}):</h3>
+			<img class="mdui-img-fluid" :src="radar.img" />
+		</div>
+
+
+		<div class="mdui-drawer mdui-drawer-close " id="left-drawer">
+			<ul class="mdui-list">
+				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
+					<i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
+					<a class="mdui-list-item-content">BMS</a>
+				</li>
+				<li class="mdui-list-item mdui-ripple">
+					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
+					<a class="mdui-list-item-content" href="./NMC.html">NMC</a>
+				</li>
+			</ul>
 		</div>
 
 
 	</div>
+	<script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/quasar@1.20.2/dist/quasar.umd.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
@@ -62,29 +103,32 @@
 			radar: {},
 			threeHours: {},
 			thirtysixHours: {},
+			distrectData: {},
+			distrect: "市中心",
+			forecastData: {},
 		},
 		async created() {
 			const forecastRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=11");
 			console.log("天气预报：", forecastRes);
-			let forecastData = forecastRes.data.substr(1, forecastRes.data.length - 2);
-			forecastData = JSON.parse(forecastData);
+			this.forecastData = forecastRes.data.substr(1, forecastRes.data.length - 2);
+			this.forecastData = JSON.parse(this.forecastData);
 			//当前天气
-			let current = JSON.parse(forecastData.Scene).value;
-			console.log(current);
-			this.current = {
-				datetime: JSON.parse(forecastData.Scene).datetime,
-				weather: current.name,
-				temperature: current.wendu,
-				windspeed: current.fengl,
-				winddirection: current.fengx,
-				airpressure: current.qiya,
-				humidity: current.shidu,
-			}
+			const distrectRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=8");
+			this.distrectData = distrectRes.data.substr(1, distrectRes.data.length - 2);
+			this.distrectData = JSON.parse(this.distrectData);
+			this.$nextTick(function () {
+				console.log('v-for渲染已经完成')
+				var inst = new mdui.Select('#ddd');
+				inst.handleUpdate();
+			})
+			this.getDistrectInfo();
+			console.log(this.distrectData);
+
 			//3小时
-			this.threeHours = JSON.parse(forecastData.ThreeHours);
+			this.threeHours = JSON.parse(this.forecastData.ThreeHours);
 			console.log(this.threeHours);
 			//36小时
-			this.thirtysixHours = JSON.parse(forecastData.thirtysix);
+			this.thirtysixHours = JSON.parse(this.forecastData.thirtysix);
 			console.log(this.thirtysixHours);
 			//雷达图
 			const radarRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=12");
@@ -96,6 +140,22 @@
 				title: radarData[0].title,
 				datetime: radarData[0].datetime
 			};
+		},
+		methods: {
+			getDistrectInfo() {
+				let currentRes = this.distrectData.value[this.distrect];
+				this.current = {
+					datetime: this.distrectData.datetime,
+					temperature: currentRes.wendu,
+					windspeed: currentRes.fengl,
+					winddirection: currentRes.fengx,
+					airpressure: currentRes.qiya,
+					humidity: currentRes.shidu,
+				}
+				if (currentRes.name == "市中心") {
+					this.current.weather = JSON.parse(this.forecastData.Scene).value.name;
+				}
+			}
 		},
 	});
 
