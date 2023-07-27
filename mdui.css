@@ -1,0 +1,17 @@
+.mdui-list-item-active {
+	color: #1a73e8;
+	background-color: #e8f0fe;
+}
+
+.mdui-list-item {
+	padding-left: 20px;
+	border-radius: 0 50px 50px 0;
+}
+
+.mdui-table-fluid.tExtra {
+	max-width: 800px;
+}
+
+.mdui-chip-title {
+	display: block;
+}

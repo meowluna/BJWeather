@@ -10,32 +10,35 @@
 </head>
 
 <body class="mdui-appbar-with-toolbar mdui-theme-primary-white mdui-appbar-with-tab mdui-theme-accent-pink ">
-	<!-- mdui appbar+tabbar -->
-	<div class="mdui-appbar mdui-appbar-fixed  mdui-color-white">
-		<div class="mdui-toolbar">
-			<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#left-drawer'}"><i
-					class="mdui-icon material-icons">menu</i>
-			</a>
-			<a href="javascript:;" class="mdui-typo-headline">BJWeather</a>
-			<a href="javascript:;" class="mdui-typo-title">北京气象台(stationid:54511)</a>
-			<div class="mdui-toolbar-spacer"></div>
-			<a href="javascript:;" class="mdui-btn mdui-btn-icon">
-				<i class="mdui-icon material-icons" onclick="location.reload()">refresh</i>
-			</a>
-			<a href="javascript:;" class="mdui-btn mdui-btn-icon">
-				<i class="mdui-icon material-icons">more_vert</i>
-			</a>
+	<div id="BMS"><!-- mdui appbar+tabbar -->
+		<div class="mdui-appbar mdui-appbar-fixed  mdui-color-white">
+			<div class="mdui-toolbar">
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#left-drawer'}"><i
+						class="mdui-icon material-icons">menu</i>
+				</a>
+				<a href="javascript:;" class="mdui-typo-headline mdui-hidden-xs">BJWeather</a>
+				<a href="javascript:;" class="mdui-typo-title">北京气象台</a>
+				<div class="mdui-toolbar-spacer"></div>
+				<div class="mdui-chip">
+					<span class="mdui-chip-title mdui-hidden-xs">刷新时间：{{refreshTime.display}}</span>
+				</div>
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon">
+					<i class="mdui-icon material-icons" onclick="location.reload()">refresh</i>
+				</a>
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon">
+					<i class="mdui-icon material-icons">more_vert</i>
+				</a>
+			</div>
+			<div class="mdui-tab mdui-color-white" mdui-tab>
+				<a href="#tab1" class="mdui-ripple">当前</a>
+				<a href="#tab2" class="mdui-ripple">3h预报</a>
+				<a href="#tab3" class="mdui-ripple">36h预报</a>
+				<a href="#tab4" class="mdui-ripple">雷达图</a>
+			</div>
 		</div>
-		<div class="mdui-tab mdui-color-white" mdui-tab>
-			<a href="#tab1" class="mdui-ripple">当前</a>
-			<a href="#tab2" class="mdui-ripple">3h预报</a>
-			<a href="#tab3" class="mdui-ripple">36h预报</a>
-			<a href="#tab4" class="mdui-ripple">雷达图</a>
-		</div>
-	</div>
 
-	<!-- BMS body -->
-	<div id="BMS">
+		<!-- BMS body -->
+
 		<!-- currrent -->
 		<div id="tab1" class="mdui-p-a-2">
 			<select class="mdui-select" id="ddd" v-model="distrect" @change="getDistrectInfo()">
@@ -129,6 +132,11 @@
 			distrect: "市中心",
 			forecastData: {},
 			thirtysixHoursDateTime: "",
+			refreshTime: {
+				display: "刚刚",
+				min: 0,
+				secound: 0,
+			},
 		},
 		async created() {
 			const forecastRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=11");
@@ -167,6 +175,21 @@
 				title: radarData[0].title,
 				datetime: radarData[0].datetime
 			};
+			setInterval(() => {
+				this.refreshTime.secound += 30;
+				if (this.refreshTime.secound == 60) {
+					this.refreshTime.min += 1;
+					this.refreshTime.secound = 0;
+				}
+				this.refreshTime.display = "";
+				if (this.refreshTime.min != 0) {
+					this.refreshTime.display = this.refreshTime.min + "分";
+				}
+				if (this.refreshTime.secound != 0) {
+					this.refreshTime.display += + this.refreshTime.secound + "s";
+				}
+				this.refreshTime.display += "前";
+			}, 30000);
 		},
 		methods: {
 			getDistrectInfo() {
