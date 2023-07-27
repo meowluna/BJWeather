@@ -86,6 +86,30 @@
 		<!-- 36h -->
 		<div id="tab3" class="mdui-p-a-2">
 			<h3>36小时预报(发布时间{{thirtysixHoursDateTime}}):</h3>
+			<div class="mdui-table-fluid tExtra">
+				<table class="mdui-table mdui-table-hoverable">
+					<thead>
+						<tr>
+							<th>时间</th>
+							<th>天气</th>
+							<th>气温</th>
+							<th>风力</th>
+							<th>风向</th>
+							<th>相对湿度</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(item,index) in thirtysixHours" :key="item.lv">
+							<td>{{item.date}}</td>
+							<td>{{item.weather}}</td>
+							<td>{{item.plain_temp}}</td>
+							<td>{{item.windspeed}}</td>
+							<td>{{item.wind}}</td>
+							<td>{{item.other}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 			<ul>
 				<li v-for="(item,index) in thirtysixHours" :key="item.lv">
 					{{item.date}}：天气：{{item.weather}}
