@@ -20,7 +20,7 @@
 				<a href="javascript:;" class="mdui-typo-title">北京气象台</a>
 				<div class="mdui-toolbar-spacer"></div>
 				<div class="mdui-chip">
-					<span class="mdui-chip-title mdui-hidden-xs">刷新时间：{{refreshTime.display}}</span>
+					<span class="mdui-chip-title">{{refreshTime.display}}</span>
 				</div>
 				<a href="javascript:;" class="mdui-btn mdui-btn-icon">
 					<i class="mdui-icon material-icons" onclick="location.reload()">refresh</i>
@@ -133,7 +133,7 @@
 			forecastData: {},
 			thirtysixHoursDateTime: "",
 			refreshTime: {
-				display: "刚刚",
+				display: "刚刚刷新",
 				min: 0,
 				secound: 0,
 			},
