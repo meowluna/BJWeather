@@ -20,7 +20,8 @@
 				<a href="javascript:;" class="mdui-typo-title">北京气象台</a>
 				<div class="mdui-toolbar-spacer"></div>
 				<div class="mdui-chip">
-					<span class="mdui-chip-title">{{refreshTime.display}}</span>
+					<span class="mdui-chip-title"
+						:class="{needUpdate:refreshTime.needUpdate}">{{refreshTime.display}}</span>
 				</div>
 				<a href="javascript:;" class="mdui-btn mdui-btn-icon">
 					<i class="mdui-icon material-icons" onclick="location.reload()">refresh</i>
@@ -139,6 +140,7 @@
 				display: "刚刚刷新",
 				min: 0,
 				secound: 0,
+				needUpdate: false,
 			},
 		},
 		async created() {
@@ -178,20 +180,27 @@
 				title: radarData[0].title,
 				datetime: radarData[0].datetime
 			};
-			setInterval(() => {
+			var interval = setInterval(() => {
 				this.refreshTime.secound += 30;
-				if (this.refreshTime.secound == 60) {
-					this.refreshTime.min += 1;
-					this.refreshTime.secound = 0;
+				if (this.refreshTime.min > 30) {
+					this.refreshTime.display = "需要更新"
+					this.refreshTime.needUpdate = true;
+					clearInterval(interval);
+				} else {
+					if (this.refreshTime.secound == 60) {
+						this.refreshTime.min += 1;
+						this.refreshTime.secound = 0;
+					}
+					this.refreshTime.display = "";
+					if (this.refreshTime.min != 0) {
+						this.refreshTime.display = this.refreshTime.min + "分";
+					}
+					if (this.refreshTime.secound != 0) {
+						this.refreshTime.display += + this.refreshTime.secound + "s";
+					}
+					this.refreshTime.display += "前";
 				}
-				this.refreshTime.display = "";
-				if (this.refreshTime.min != 0) {
-					this.refreshTime.display = this.refreshTime.min + "分";
-				}
-				if (this.refreshTime.secound != 0) {
-					this.refreshTime.display += + this.refreshTime.secound + "s";
-				}
-				this.refreshTime.display += "前";
+
 			}, 30000);
 		},
 		methods: {

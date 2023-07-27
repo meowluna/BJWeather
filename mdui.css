@@ -15,3 +15,8 @@
 .mdui-chip-title {
 	display: block;
 }
+
+.needUpdate {
+	background-color: red;
+	color: white;
+}
