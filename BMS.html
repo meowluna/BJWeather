@@ -110,16 +110,16 @@
 					</tbody>
 				</table>
 			</div>
-			<ul>
-				<li v-for="(item,index) in thirtysixHours" :key="item.lv">
-					{{item.date}}：天气：{{item.weather}}
-					气温：{{item.plain_temp}}
-					风力：{{item.windspeed}} 风向：{{item.wind}} 相对湿度：{{item.other}}</li>
-			</ul>
 		</div>
 
 		<!-- radar -->
 		<div id="tab4" class="mdui-p-a-2">
+			<button class="mdui-btn mdui-color-theme-accent mdui-ripple" @click="radarAutoChange()">开始</button>
+			<button class="mdui-btn mdui-color-theme-accent mdui-ripple" @click="radarStopAutoChange()">停止</button>
+			<label class="mdui-slider mdui-slider-discrete" style="max-width: 600px;">
+				<input type="range" step="1" min="1" max="500" v-model="radarSelecter"
+					@change="radar.img='http://101.200.145.109:8087/qxj/' + radarData[500 - radarSelecter].fileName" />
+			</label>
 			<h3>{{radar.title}}(发布时间{{radar.datetime}}):</h3>
 			<img class="mdui-img-fluid" :src="radar.img" />
 		</div>
@@ -166,6 +166,9 @@
 				secound: 0,
 				needUpdate: false,
 			},
+			radarSelecter: 500,
+			radarData: {},
+			radarInterval: "",
 		},
 		async created() {
 			const forecastRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=11");
@@ -197,14 +200,14 @@
 			//雷达图
 			const radarRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=12");
 			console.log("雷达图：", radarRes);
-			let radarData = radarRes.data.substr(1, radarRes.data.length - 2);
-			radarData = JSON.parse(radarData);
+			this.radarData = radarRes.data.substr(1, radarRes.data.length - 2);
+			this.radarData = JSON.parse(this.radarData);
 			this.radar = {
-				img: "http://101.200.145.109:8087/qxj/" + radarData[0].fileName,
-				title: radarData[0].title,
-				datetime: radarData[0].datetime
+				img: "http://101.200.145.109:8087/qxj/" + this.radarData[500 - this.radarSelecter].fileName,
+				title: this.radarData[0].title,
+				datetime: this.radarData[0].datetime
 			};
-			var interval = setInterval(() => {
+			let interval = setInterval(() => {
 				this.refreshTime.secound += 30;
 				if (this.refreshTime.min > 30) {
 					this.refreshTime.display = "需要更新"
@@ -241,6 +244,23 @@
 				if (currentRes.name == "市中心") {
 					this.current.weather = JSON.parse(this.forecastData.Scene).value.name;
 				}
+			},
+			radarAutoChange() {
+				this.radarSelecter = 0;
+				this.radarInterval = setInterval(() => {
+					console.log("start auto change");
+					if (this.radarSelecter == 500) {
+						clearInterval(this.radarInterval);
+						return;
+					}
+					this.radarSelecter++;
+					mdui.updateSliders();
+					//由于未知原因，@change不能监听更改，采用手动修改
+					this.radar.img = 'http://101.200.145.109:8087/qxj/' + this.radarData[500 - this.radarSelecter].fileName
+				}, 200);
+			},
+			radarStopAutoChange() {
+				clearInterval(this.radarInterval);
 			}
 		},
 	});
