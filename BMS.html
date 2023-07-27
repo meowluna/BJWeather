@@ -52,11 +52,28 @@
 		</div>
 		<div id="tab2" class="mdui-p-a-2">
 			<h3>3小时预报(发布时间{{threeHours.datetime}}):</h3>
-			<ul>
-				<li v-for="(item,index) in threeHours.value" :key="item.hour">{{index}}：天气：{{item.wp}}
-					气温：{{item.t}}℃
-					风力：{{item.wspeed}} 风向：{{item.wdir}}</li>
-			</ul>
+			<div class="mdui-table-fluid">
+				<table class="mdui-table mdui-table-hoverable">
+					<thead>
+						<tr>
+							<th>时间</th>
+							<th>天气</th>
+							<th>气温</th>
+							<th>风力</th>
+							<th>风向</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(item,index) in threeHours.value" :key="item.hour">
+							<td>{{index}}</td>
+							<td>{{item.wp}}</td>
+							<td>{{item.t}}℃</td>
+							<td>{{item.wspeed}}</td>
+							<td>{{item.wdir}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<div id="tab3" class="mdui-p-a-2">
 			<h3>36小时预报(发布时间{{thirtysixHours.datetime}}):</h3>
