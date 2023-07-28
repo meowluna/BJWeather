@@ -21,11 +21,10 @@
 				<a href="javascript:;" class="mdui-typo-title">北京气象台</a>
 
 				<div class="mdui-toolbar-spacer"></div>
-				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#warningDialog'}"
-					v-if="this.warningList.length != 0">
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-hidden-xs"
+					mdui-dialog="{target: '#warningDialog'}" v-if="this.warningList.length != 0">
 					<i class="mdui-icon material-icons">error_outline</i>
 				</a>
-				<a href="javascript:;" class="mdui-btn mdui-btn-icon" v-if="this.warningList.length != 0"></a>
 				<div class="mdui-chip">
 					<span class="mdui-chip-title" :class="{needUpdate:refreshTime.needUpdate}"
 						id="refreshDisplay">{{refreshTime.display}}</span>
@@ -33,9 +32,24 @@
 				<a href="javascript:;" class="mdui-btn mdui-btn-icon">
 					<i class="mdui-icon material-icons" onclick="location.reload()">refresh</i>
 				</a>
-				<a href="javascript:;" class="mdui-btn mdui-btn-icon">
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#exmenu'}">
 					<i class="mdui-icon material-icons">more_vert</i>
 				</a>
+				<ul class="mdui-menu" id="exmenu">
+					<li class="mdui-menu-item mdui-hidden-sm-up" mdui-dialog="{target: '#warningDialog'}"
+						v-if="this.warningList.length != 0">
+						<a href="javascript:;" class="mdui-ripple">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">error_outline</i>
+							预警信号
+						</a>
+					</li>
+					<!-- <li class="mdui-divider"></li> -->
+					<!-- <li class="mdui-menu-item">
+						<a href="javascript:;" class="mdui-ripple">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">delete</i>Remove
+						</a>
+					</li> -->
+				</ul>
 			</div>
 			<div class="mdui-tab mdui-color-white" mdui-tab>
 				<a href="#tab1" class="mdui-ripple">当前</a>
@@ -44,6 +58,9 @@
 				<a href="#tab4" class="mdui-ripple">7d预报</a>
 				<a href="#tab5" class="mdui-ripple">雷达图</a>
 			</div>
+		</div>
+		<div class="mdui-progress" v-if="isLoading">
+			<div class="mdui-progress-indeterminate"></div>
 		</div>
 
 		<!-- currrent -->
@@ -186,6 +203,8 @@
 			</ul>
 		</div>
 
+
+
 		<!-- 预警 -->
 		<div class="mdui-dialog" id="warningDialog">
 			<div class="mdui-dialog-content">
@@ -241,6 +260,7 @@
 			warningData: [],
 			isAutoPlay: false,
 			sevenDaysData: [],
+			isLoading: true,
 		},
 		async created() {
 			const forecastRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=11");
@@ -341,6 +361,9 @@
 				this.refreshTimeChange();
 
 			}, 10000);
+		},
+		mounted() {
+			this.isLoading = false;
 		},
 		methods: {
 			getDistrectInfo() {
