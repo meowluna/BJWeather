@@ -10,7 +10,7 @@
 </head>
 
 <body class="mdui-appbar-with-toolbar mdui-theme-primary-white mdui-appbar-with-tab mdui-theme-accent-pink ">
-	<div id="BMS">
+	<div id="app">
 		<!-- mdui appbar+tabbar -->
 		<div class="mdui-appbar mdui-appbar-fixed  mdui-color-white">
 			<div class="mdui-toolbar">
@@ -41,7 +41,8 @@
 				<a href="#tab1" class="mdui-ripple">当前</a>
 				<a href="#tab2" class="mdui-ripple">3h预报</a>
 				<a href="#tab3" class="mdui-ripple">36h预报</a>
-				<a href="#tab4" class="mdui-ripple">雷达图</a>
+				<a href="#tab4" class="mdui-ripple">7d预报</a>
+				<a href="#tab5" class="mdui-ripple">雷达图</a>
 			</div>
 		</div>
 
@@ -117,20 +118,54 @@
 			</div>
 		</div>
 
-		<!-- radar -->
+		<!-- 7d -->
 		<div id="tab4" class="mdui-p-a-2">
+			<h3>7天预报:</h3>
+			<div class="mdui-table-fluid tExtra">
+				<table class="mdui-table mdui-table-hoverable">
+					<thead>
+						<tr>
+							<th>日期</th>
+							<th>时段</th>
+							<th>天气</th>
+							<th>气温</th>
+							<th>风力</th>
+							<th>风向</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(item,index) in sevenDaysData" :key="index">
+							<td>{{item.time}}</td>
+							<td>{{item.Nighttime}}</td>
+							<td>{{item.condition}}</td>
+							<td>{{item.temperature}}℃</td>
+							<td>{{item.windscale}}</td>
+							<td>{{item.winddirection}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- radar -->
+		<div id="tab5" class="mdui-p-a-2">
 			<h3>{{radar.title}}(发布时间{{radar.datetime}}):</h3>
 			<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" @click="radarAutoPlay()">
 				<i class="mdui-icon material-icons" v-show="!this.isAutoPlay">play_arrow</i>
 				<i class="mdui-icon material-icons" v-show="this.isAutoPlay">pause</i>
 			</button>
+			<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" v-show="radarSelecter!=1"
+				@click="radarSelecter--,reloadRadar()">
+				<i class="mdui-icon material-icons">arrow_back</i>
+			</button>
+			<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" v-show="radarSelecter!=500"
+				@click="radarSelecter++,reloadRadar()">
+				<i class="mdui-icon material-icons">arrow_forward</i>
+			</button>
 			<label class="mdui-slider mdui-slider-discrete" style="max-width: 600px;">
-				<input type="range" step="1" min="1" max="500" v-model="radarSelecter" @change="radar = {
-						img: 'http://101.200.145.109:8087/qxj/' + radarData[500 - radarSelecter].fileName,
-						title: radarData[500 - radarSelecter].title,
-						datetime: radarData[500 - radarSelecter].datetime,
-					}" />
+				<input type="range" step="1" min="1" max="500" v-model="radarSelecter" @change="reloadRadar()" />
 			</label>
+
 			<img class="mdui-img-fluid" :src="radar.img" />
 		</div>
 
@@ -181,8 +216,8 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script>
-	const BMS = new Vue({
-		el: "#BMS",
+	const app = new Vue({
+		el: "#app",
 		data: {
 			current: {},
 			radar: {},
@@ -204,6 +239,7 @@
 			warningList: [],
 			warningData: [],
 			isAutoPlay: false,
+			sevenDaysData: [],
 		},
 		async created() {
 			const forecastRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=11");
@@ -232,6 +268,15 @@
 				this.thirtysixHours[temp.value[item].lv] = temp.value[item];
 			}
 			console.log(this.thirtysixHours);
+			//7d
+			const sevenDaysRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=10");
+			this.sevenDaysData = JSON.parse(sevenDaysRes.data.substr(1, sevenDaysRes.data.length - 2));
+			for (item in this.sevenDaysData) {
+				if (this.sevenDaysData[item].Nighttime == "夜晚") {
+					this.sevenDaysData[item].time = "";
+				}
+			}
+			console.log("7d:", this.sevenDaysData);
 			//雷达图
 			const radarRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=12");
 			console.log("雷达图：", radarRes);
@@ -337,19 +382,21 @@
 						this.radarSelecter++;
 						mdui.updateSliders();
 						//@change不能监听更改?采用手动修改
-						this.radar = {
-							img: 'http://101.200.145.109:8087/qxj/' + this.radarData[500 - this.radarSelecter].fileName,
-							title: this.radarData[500 - this.radarSelecter].title,
-							datetime: this.radarData[500 - this.radarSelecter].datetime,
-						}
-
+						this.reloadRadar();
 					}, 200);
 				} else {
 					this.isAutoPlay = false;
 					clearInterval(this.radarInterval);
 				}
-
 			},
+			reloadRadar() {
+				mdui.updateSliders();
+				this.radar = {
+					img: 'http://101.200.145.109:8087/qxj/' + this.radarData[500 - this.radarSelecter].fileName,
+					title: this.radarData[500 - this.radarSelecter].title,
+					datetime: this.radarData[500 - this.radarSelecter].datetime,
+				}
+			}
 		},
 	});
 
