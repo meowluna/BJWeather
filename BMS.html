@@ -232,6 +232,7 @@
 				min: 0,
 				secound: 0,
 				needUpdate: false,
+				startTime: 0,
 			},
 			radarSelecter: 500,
 			radarData: {},
@@ -287,28 +288,7 @@
 				title: this.radarData[0].title,
 				datetime: this.radarData[0].datetime
 			};
-			let interval = setInterval(() => {
-				this.refreshTime.secound += 30;
-				if (this.refreshTime.min > 30) {
-					this.refreshTime.display = "需要更新"
-					this.refreshTime.needUpdate = true;
-					clearInterval(interval);
-				} else {
-					if (this.refreshTime.secound == 60) {
-						this.refreshTime.min += 1;
-						this.refreshTime.secound = 0;
-					}
-					this.refreshTime.display = "";
-					if (this.refreshTime.min != 0) {
-						this.refreshTime.display = this.refreshTime.min + "分";
-					}
-					if (this.refreshTime.secound != 0) {
-						this.refreshTime.display += + this.refreshTime.secound + "s";
-					}
-					this.refreshTime.display += "前";
-				}
 
-			}, 30000);
 			//预警信号
 			const warningListRes = await axios.get("http://101.200.145.109:8087/weather/scene/warningPage.do?callback=&pageNo=1&doc=北京市");
 			let warningListTemp = JSON.parse(warningListRes.data.substr(1, warningListRes.data.length - 2)).value;
@@ -350,6 +330,17 @@
 					console.log(warningTemp);
 				}
 			}
+			this.startTime = new Date().getTime();
+			document.addEventListener("visibilitychange", function () {
+				console.log(document.visibilityState, performance.now());
+				if (document.visibilityState == "visible") {
+					app.refreshTimeChange();
+				}
+			});
+			setInterval(() => {
+				this.refreshTimeChange();
+
+			}, 10000);
 		},
 		methods: {
 			getDistrectInfo() {
@@ -395,6 +386,20 @@
 					img: 'http://101.200.145.109:8087/qxj/' + this.radarData[500 - this.radarSelecter].fileName,
 					title: this.radarData[500 - this.radarSelecter].title,
 					datetime: this.radarData[500 - this.radarSelecter].datetime,
+				}
+			},
+			refreshTimeChange() {
+				let timeTemp = (new Date().getTime() - this.startTime) / 1000;
+				console.log("11", timeTemp);
+				if (timeTemp > 10) {
+					app.refreshTime.display = "";
+					if (timeTemp / 60 > 30) {
+						app.refreshTime.display = "需要更新"
+						app.refreshTime.needUpdate = true;
+					} else if (Math.floor(timeTemp / 60) > 0) {
+						app.refreshTime.display = Math.floor(timeTemp / 60) + "分";
+					}
+					app.refreshTime.display += Math.floor(timeTemp % 60) + "s前";
 				}
 			}
 		},
