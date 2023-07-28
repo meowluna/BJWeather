@@ -24,3 +24,10 @@
 .mdui-table {
 	white-space: nowrap;
 }
+
+@media (prefers-color-scheme: dark) {
+	.autoDarkAppBar {
+		background-color: #303030 !important;
+		color: #fff !important;
+	}
+}

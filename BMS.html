@@ -9,10 +9,10 @@
 	<link rel="stylesheet" href="./mdui.css" />
 </head>
 
-<body class="mdui-appbar-with-toolbar mdui-theme-primary-white mdui-appbar-with-tab mdui-theme-accent-pink ">
+<body class="mdui-appbar-with-toolbar mdui-appbar-with-tab mdui-theme-accent-pink">
 	<div id="app">
 		<!-- mdui appbar+tabbar -->
-		<div class="mdui-appbar mdui-appbar-fixed  mdui-color-white">
+		<div class="mdui-appbar mdui-appbar-fixed mdui-color-white">
 			<div class="mdui-toolbar">
 				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#left-drawer'}">
 					<i class="mdui-icon material-icons">menu</i>
@@ -43,15 +43,16 @@
 							预警信号
 						</a>
 					</li>
-					<!-- <li class="mdui-divider"></li> -->
-					<!-- <li class="mdui-menu-item">
+					<li class="mdui-divider"></li>
+					<li class="mdui-menu-item" mdui-dialog="{target: '#settingsDialog'}">
 						<a href="javascript:;" class="mdui-ripple">
-							<i class="mdui-menu-item-icon mdui-icon material-icons">delete</i>Remove
+							<i class=" mdui-menu-item-icon mdui-icon material-icons">settings</i>
+							设置
 						</a>
-					</li> -->
+					</li>
 				</ul>
 			</div>
-			<div class="mdui-tab mdui-color-white" mdui-tab>
+			<div class="mdui-tab" mdui-tab>
 				<a href="#tab1" class="mdui-ripple">当前</a>
 				<a href="#tab2" class="mdui-ripple">3h预报</a>
 				<a href="#tab3" class="mdui-ripple">36h预报</a>
@@ -187,7 +188,7 @@
 		</div>
 
 		<!-- sidebar -->
-		<div class="mdui-drawer mdui-drawer-close " id="left-drawer">
+		<div class="mdui-drawer mdui-drawer-close mdui-color-theme" id="left-drawer">
 			<ul class="mdui-list">
 				<li class="mdui-list-item">
 					<a class="mdui-list-item-content">BJWeather</a>
@@ -220,6 +221,22 @@
 						<br>{{item.mainbody.pubtime}}<br>{{item.mainbody.pubbody}}
 					</li>
 				</ul>
+			</div>
+			<div class="mdui-dialog-actions">
+				<button class="mdui-btn mdui-ripple" mdui-dialog-confirm>ok</button>
+			</div>
+		</div>
+
+
+
+		<!-- 设置 -->
+		<div class="mdui-dialog" id="settingsDialog">
+			<div class="mdui-dialog-content">
+				<div class="mdui-dialog-title">设置</div>自动深色模式
+				<label class="mdui-switch mdui-float-right">
+					<input type="checkbox" v-model="isAutoDark" onclick="app.autoDark()" />
+					<i class="mdui-switch-icon"></i>
+				</label>
 			</div>
 			<div class="mdui-dialog-actions">
 				<button class="mdui-btn mdui-ripple" mdui-dialog-confirm>ok</button>
@@ -261,6 +278,7 @@
 			isAutoPlay: false,
 			sevenDaysData: [],
 			isLoading: true,
+			isAutoDark: false,
 		},
 		async created() {
 			const forecastRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=11");
@@ -361,6 +379,11 @@
 				this.refreshTimeChange();
 
 			}, 10000);
+			if (localStorage.isAutoDark == "true") {
+				this.isAutoDark = true;
+				document.body.classList.add("mdui-theme-layout-auto");
+				document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
+			}
 		},
 		mounted() {
 			this.isLoading = false;
@@ -426,7 +449,24 @@
 						app.refreshTime.display += Math.floor(timeTemp % 60) + "s前";
 					}
 				}
-			}
+			},
+			autoDark() {
+				// setTimeout(() => {
+				// this.$nextTick(function () {
+				if (!this.isAutoDark) {
+					document.body.classList.add("mdui-theme-layout-auto");
+					document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
+					localStorage.isAutoDark = true;
+				} else {
+					console.log(111);
+					document.body.classList.remove("mdui-theme-layout-auto");
+					document.querySelector(".mdui-appbar").classList.remove("autoDarkAppBar");
+					localStorage.isAutoDark = false;
+				}
+				// })
+				// }, 1000);
+
+			},
 		},
 	});
 
