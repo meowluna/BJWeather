@@ -396,10 +396,12 @@
 					if (timeTemp / 60 > 30) {
 						app.refreshTime.display = "需要更新"
 						app.refreshTime.needUpdate = true;
-					} else if (Math.floor(timeTemp / 60) > 0) {
-						app.refreshTime.display = Math.floor(timeTemp / 60) + "分";
+					} else {
+						if (Math.floor(timeTemp / 60) > 0) {
+							app.refreshTime.display = Math.floor(timeTemp / 60) + "分";
+						}
+						app.refreshTime.display += Math.floor(timeTemp % 60) + "s前";
 					}
-					app.refreshTime.display += Math.floor(timeTemp % 60) + "s前";
 				}
 			}
 		},
