@@ -31,3 +31,7 @@
 		color: #fff !important;
 	}
 }
+
+.mdui-panel-item-title {
+	width: fit-content !important;
+}
