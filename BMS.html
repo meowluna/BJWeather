@@ -444,7 +444,7 @@
 						app.refreshTime.needUpdate = true;
 					} else {
 						if (Math.floor(timeTemp / 60) > 0) {
-							app.refreshTime.display = Math.floor(timeTemp / 60) + "m";
+							app.refreshTime.display += Math.floor(timeTemp / 60) + "m";
 						}
 						app.refreshTime.display += Math.floor(timeTemp % 60) + "s";
 					}
