@@ -86,21 +86,24 @@
 		</div>
 
 		<div>
-			<h3>更新时间:{{updateTime}}</h3>
+			<h3 class="mdui-m-l-3">更新时间:{{updateTime}}</h3>
 
-			<div class="mdui-panel mdui-panel-popout" mdui-panel>
+			<div class="mdui-panel" mdui-panel>
 				<div class="mdui-panel-item" v-for="(item ,index) in this.warningList">
 					<div class="mdui-panel-item-header">
+						<span class="mdui-chip-icon mdui-m-r-1" :style="{backgroundColor:item.signdegree}">
+							<i class="mdui-icon material-icons">error_outline</i>
+						</span>
 						<div class="mdui-panel-item-title">{{item.title}}</div>
-						<div class="mdui-panel-item-summary">{{item.pubDate}}</div>
 						<i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
 					</div>
 					<div class="mdui-panel-item-body">
-						<br>{{item.description}}<br><br>
+						{{item.pubDate}}<br>{{item.description}}<br><br>
 					</div>
 				</div>
 			</div>
 		</div>
+
 	</div>
 	<script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
 </body>
@@ -138,6 +141,16 @@
 			this.updateTime = warningData.lastBuildDate;
 			for (item in warningData.item) {
 				if (warningData.item[item].title.substr(0, 3) == "北京市") {
+					warningData.item[item].title = warningData.item[item].title.substr(warningData.item[item].title.indexOf("发布") + 2, warningData.item[item].title.length - warningData.item[item].title.indexOf("发布") + 2);
+					if (warningData.item[item].title.match("蓝色")) {
+						warningData.item[item].signdegree = "#2196F3";
+					} else if (warningData.item[item].title.match("黄色")) {
+						warningData.item[item].signdegree = "#fdd835";
+					} else if (warningData.item[item].title.match("橙色")) {
+						warningData.item[item].signdegree = "#FF9800";
+					} else if (warningData.item[item].title.match("红色")) {
+						warningData.item[item].signdegree = "#F44336";
+					}
 					this.warningList.push(warningData.item[item]);
 				}
 			}
