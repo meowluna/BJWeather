@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css" />
+	<link rel="stylesheet" href="./mdui.css" />
+</head>
+
+<body class="mdui-appbar-with-toolbar mdui-theme-accent-pink">
+	<div id="app">
+		<!-- mdui appbar+tabbar -->
+		<div class="mdui-appbar mdui-appbar-fixed mdui-color-white">
+			<div class="mdui-toolbar">
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#left-drawer'}">
+					<i class="mdui-icon material-icons">menu</i>
+				</a>
+				<a href="javascript:;" class="mdui-typo-headline mdui-hidden-xs">B天气</a>
+				<a href="javascript:;" class="mdui-typo-title">国家预警信息发布中心</a>
+
+				<div class="mdui-toolbar-spacer"></div>
+				<div class="mdui-chip">
+					<span class="mdui-chip-title" :class="{needUpdate:refreshTime.needUpdate}"
+						id="refreshDisplay">{{refreshTime.display}}</span>
+				</div>
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon">
+					<i class="mdui-icon material-icons" onclick="location.reload()">refresh</i>
+				</a>
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#exmenu'}">
+					<i class="mdui-icon material-icons">more_vert</i>
+				</a>
+				<ul class="mdui-menu" id="exmenu">
+					<li class="mdui-divider"></li>
+					<li class="mdui-menu-item" mdui-dialog="{target: '#settingsDialog'}">
+						<a href="javascript:;" class="mdui-ripple">
+							<i class=" mdui-menu-item-icon mdui-icon material-icons">settings</i>
+							设置
+						</a>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+		<div class="mdui-progress" v-if="isLoading">
+			<div class="mdui-progress-indeterminate"></div>
+		</div>
+
+
+
+		<!-- sidebar -->
+		<div class="mdui-drawer mdui-drawer-close mdui-color-theme" id="left-drawer">
+			<ul class="mdui-list">
+				<li class="mdui-list-item">
+					<a class="mdui-list-item-content">BJWeather</a>
+				</li>
+				<li class="mdui-list-item mdui-ripple">
+					<i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
+					<a class="mdui-list-item-content">BMS</a>
+				</li>
+				<li class="mdui-list-item mdui-ripple">
+					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
+					<a class="mdui-list-item-content" href="./NMC.html">NMC</a>
+				</li>
+				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
+					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
+					<a class="mdui-list-item-content" href="./12379.html">国家预警信息发布中心</a>
+				</li>
+			</ul>
+		</div>
+
+
+		<!-- 设置 -->
+		<div class="mdui-dialog" id="settingsDialog">
+			<div class="mdui-dialog-content">
+				<div class="mdui-dialog-title">设置</div>自动深色模式
+				<label class="mdui-switch mdui-float-right">
+					<input type="checkbox" v-model="isAutoDark" onclick="app.autoDark()" />
+					<i class="mdui-switch-icon"></i>
+				</label>
+			</div>
+			<div class="mdui-dialog-actions">
+				<button class="mdui-btn mdui-ripple" mdui-dialog-confirm>ok</button>
+			</div>
+		</div>
+
+		<div>
+			<h3>更新时间:{{updateTime}}</h3>
+			<ul>
+				<li v-for="(item ,index) in this.warningList">
+					{{item.title}}<br>{{item.description}}<br><br>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quasar@1.20.2/dist/quasar.umd.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/abdmob/x2js@master/xml2json.js"></script>
+
+<script>
+	const app = new Vue({
+		el: "#app",
+		data: {
+			refreshTime: {
+				display: "刚刚刷新",
+				min: 0,
+				secound: 0,
+				needUpdate: false,
+				startTime: 0,
+			},
+			isLoading: true,
+			isAutoDark: false,
+			warningList: [],
+			updateTime: ""
+		},
+		async created() {
+			if (localStorage.isAutoDark == "true") {
+				this.isAutoDark = true;
+				document.body.classList.add("mdui-theme-layout-auto");
+				document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
+			}
+			const warningRes = await axios.get("https://11rsshub.vercel.app/12379")
+			let x2js = new X2JS();
+			let warningData = x2js.xml_str2json(warningRes.data).rss.channel;
+			this.updateTime = warningData.lastBuildDate;
+			for (item in warningData.item) {
+				if (warningData.item[item].title.substr(0, 3) == "北京市") {
+					this.warningList.push(warningData.item[item]);
+				}
+			}
+
+			console.log(warningData);
+			this.startTime = new Date().getTime();
+			document.addEventListener("visibilitychange", function () {
+				console.log(document.visibilityState, performance.now());
+				if (document.visibilityState == "visible") {
+					app.refreshTimeChange();
+				}
+			});
+			setInterval(() => {
+				this.refreshTimeChange();
+
+			}, 10000);
+
+			this.$nextTick(function () {
+				this.isLoading = false;
+			})
+		},
+		methods: {
+			refreshTimeChange() {
+				let timeTemp = (new Date().getTime() - this.startTime) / 1000;
+				console.log("11", timeTemp);
+				if (timeTemp > 10) {
+					app.refreshTime.display = "T+";
+					if (timeTemp / 60 > 30) {
+						app.refreshTime.display = "已过时"
+						app.refreshTime.needUpdate = true;
+					} else {
+						if (Math.floor(timeTemp / 60) > 0) {
+							app.refreshTime.display += Math.floor(timeTemp / 60) + "m";
+						}
+						app.refreshTime.display += Math.floor(timeTemp % 60) + "s";
+					}
+				}
+			},
+			autoDark() {
+				// setTimeout(() => {
+				// this.$nextTick(function () {
+				if (!this.isAutoDark) {
+					document.body.classList.add("mdui-theme-layout-auto");
+					document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
+					localStorage.isAutoDark = true;
+				} else {
+					console.log(111);
+					document.body.classList.remove("mdui-theme-layout-auto");
+					document.querySelector(".mdui-appbar").classList.remove("autoDarkAppBar");
+					localStorage.isAutoDark = false;
+				}
+				// })
+				// }, 1000);
+
+			},
+		},
+	});
+
+</script>
+
+</html>
