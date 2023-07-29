@@ -438,15 +438,15 @@
 				let timeTemp = (new Date().getTime() - this.startTime) / 1000;
 				console.log("11", timeTemp);
 				if (timeTemp > 10) {
-					app.refreshTime.display = "";
+					app.refreshTime.display = "T+";
 					if (timeTemp / 60 > 30) {
-						app.refreshTime.display = "需要更新"
+						app.refreshTime.display = "已过时"
 						app.refreshTime.needUpdate = true;
 					} else {
 						if (Math.floor(timeTemp / 60) > 0) {
-							app.refreshTime.display = Math.floor(timeTemp / 60) + "分";
+							app.refreshTime.display = Math.floor(timeTemp / 60) + "m";
 						}
-						app.refreshTime.display += Math.floor(timeTemp % 60) + "s前";
+						app.refreshTime.display += Math.floor(timeTemp % 60) + "s";
 					}
 				}
 			},
