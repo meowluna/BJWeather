@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="./mdui.css" />
 </head>
 
-<body class="mdui-appbar-with-toolbar mdui-appbar-with-tab mdui-theme-accent-pink">
+<body class="mdui-appbar-with-toolbar mdui-theme-accent-pink">
 	<div id="app">
 		<!-- mdui appbar+tabbar -->
 		<div class="mdui-appbar mdui-appbar-fixed mdui-color-white">
@@ -18,7 +18,7 @@
 					<i class="mdui-icon material-icons">menu</i>
 				</a>
 				<a href="javascript:;" class="mdui-typo-headline mdui-hidden-xs">B天气</a>
-				<a href="javascript:;" class="mdui-typo-title">中央气象台</a>
+				<a href="javascript:;" class="mdui-typo-title">国家气象信息中心</a>
 
 				<div class="mdui-toolbar-spacer"></div>
 				<div class="mdui-chip">
@@ -41,10 +41,6 @@
 					</li>
 				</ul>
 			</div>
-			<div class="mdui-tab" mdui-tab>
-				<a href="#tab1" class="mdui-ripple">当前</a>
-				<a href="#tab2" class="mdui-ripple">雷达图</a>
-			</div>
 
 		</div>
 		<div class="mdui-progress" v-if="isLoading">
@@ -63,11 +59,11 @@
 					<i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
 					<a class="mdui-list-item-content" href="./BMS.html">北京气象台</a>
 				</li>
-				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
+				<li class="mdui-list-item mdui-ripple">
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
 					<a class="mdui-list-item-content" href="./NMC.html">中央气象台</a>
 				</li>
-				<li class="mdui-list-item mdui-ripple">
+				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
 					<a class="mdui-list-item-content" href="./CMDC.html">国家气象信息中心</a>
 				</li>
@@ -93,56 +89,22 @@
 			</div>
 		</div>
 
-		<div id="tab1" class="mdui-p-a-2">
-			<h2>当前天气(发布时间{{current.publish_time}}):</h2>
-			<ul>
-				<li>天气：{{current.weather.info}}</li>
-				<li>气温：{{current.weather.temperature}}℃</li>
-				<li>风力：{{current.wind.power}}</li>
-				<li>风速：{{current.wind.speed}}m/s</li>
-				<li>风向：{{current.wind.direct}} {{current.wind.degree}}°</li>
-				<li>气压：{{current.weather.airpressure}}hPa</li>
-				<li>相对湿度：{{current.weather.humidity}}%</li>
-				<li>AQI：{{currentAQI.aqi}} {{currentAQI.text}}</li>
-			</ul>
-		</div>
-		<div id="tab2" class="mdui-p-a-2">
-			<h2>华北雷达图:</h2>
-			<img :src="radar.img" />
+		<div>
+			{{currentData}}
 		</div>
 
 	</div>
-	<script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+	<script src=" https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js">
+	</script>
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-<!-- 
-	"warn": {
-		"alert": "2023年07月27日18时北京市气象台发布暴雨蓝色预警信号",
-		"pic": "http://image.nmc.cn/assets/img/alarm/p0002004.png",
-		"province": "北京市",
-		"city": "9999",
-		"url": "/publish/alarm/11000041600000_20230727183640.html",
-		"issuecontent": "市防汛办提示您，市气象台2023年7月27日18时25分发布暴雨蓝色预警信号：预计，当前至27日22时，房山、门头沟、昌平东部、怀柔、密云、平谷、顺义、海淀、丰台、朝阳、石景山、西城、东城、大兴、通州等地的部分地区将出现小时降雨量30毫米以上的短时强降水，山区及浅山区出现强降水诱发的中小河流洪水、山洪、地质灾害等次生灾害风险较大，城市低洼地区容易出现积水，请注意防范。",
-		"fmeans": "1.政府及相关部门按照职责做好防暴雨准备工作；2.学校、幼儿园采取适当措施，保证学生和幼儿安全； 3.驾驶人员应当注意道路积水和交通阻塞，确保安全；4.检查城市、农田、鱼塘排水系统，做好排涝准备.",
-		"signaltype": "暴雨",
-		"signallevel": "蓝色",
-		"pic2": "p0002004.png"
-	} 
--->
 
 <script>
 	const app = new Vue({
 		el: "#app",
 		data: {
-			current: {
-				weather: {},
-				wind: {},
-			},
-			radar: {},
-			currentAQI: "",
 			refreshTime: {
 				display: "刚刚刷新",
 				min: 0,
@@ -153,7 +115,8 @@
 			isLoading: true,
 			isAutoDark: false,
 			warningList: [],
-			updateTime: ""
+			updateTime: "",
+			currentData: {},
 		},
 		async created() {
 			if (localStorage.isAutoDark == "true") {
@@ -161,19 +124,11 @@
 				document.body.classList.add("mdui-theme-layout-auto");
 				document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
 			}
-			const forecastRes = await axios.get("http://www.nmc.cn/rest/weather?stationid=54511");
-			console.log("天气预报：", forecastRes);
-			let forecastData = forecastRes.data.data;
-			//当前天气
-			this.current = forecastData.real;
-			this.currentAQI = forecastData.air;
-			console.log("当前天气：", this.current.weather);
-			//雷达图
-			let radarData = forecastData.radar;
-			console.log("雷达图：", radarData);
-			this.radar = {
-				img: "//image.nmc.cn" + radarData.image,
-			}
+
+
+			const currentRes = await axios.post("http://data.cma.cn/kbweb/home/live", { lat: 40.34, lon: 116.3667, type: "0", });
+			// const curretRes = await axios.post("http://data.cma.cn/weatherGis/web/weather/weatherFcst/getDayNigntData", { staIds: 54511 });
+			this.currentData = currentRes;
 
 			this.startTime = new Date().getTime();
 			document.addEventListener("visibilitychange", function () {
@@ -227,6 +182,7 @@
 			},
 		},
 	});
+
 </script>
 
 </html>

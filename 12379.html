@@ -57,13 +57,17 @@
 				</li>
 				<li class="mdui-list-item mdui-ripple">
 					<i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
-					<a class="mdui-list-item-content" href="./BMS.html">BMS</a>
+					<a class="mdui-list-item-content" href="./BMS.html">北京气象台</a>
 				</li>
 				<li class="mdui-list-item mdui-ripple">
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
-					<a class="mdui-list-item-content" href="./NMC.html">NMC</a>
+					<a class="mdui-list-item-content" href="./NMC.html">中央气象台</a>
 				</li>
 				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
+					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
+					<a class="mdui-list-item-content" href="./CMDC.html">国家气象信息中心</a>
+				</li>
+				<li class="mdui-list-item mdui-ripple">
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
 					<a class="mdui-list-item-content" href="./12379.html">国家预警信息发布中心</a>
 				</li>
@@ -87,7 +91,6 @@
 
 		<div>
 			<h3 class="mdui-m-l-3">更新时间:{{updateTime}}</h3>
-
 			<div class="mdui-panel" mdui-panel>
 				<div class="mdui-panel-item" v-for="(item ,index) in this.warningList">
 					<div class="mdui-panel-item-header">
@@ -105,11 +108,11 @@
 		</div>
 
 	</div>
-	<script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+	<script src=" https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js">
+	</script>
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quasar@1.20.2/dist/quasar.umd.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/abdmob/x2js@master/xml2json.js"></script>
 
@@ -130,6 +133,7 @@
 			updateTime: ""
 		},
 		async created() {
+
 			if (localStorage.isAutoDark == "true") {
 				this.isAutoDark = true;
 				document.body.classList.add("mdui-theme-layout-auto");

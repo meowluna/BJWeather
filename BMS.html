@@ -72,6 +72,7 @@
 			<h3>当前天气(发布时间{{current.datetime}}):</h3>
 			<ul>
 				<li v-show="this.current.weather">天气：{{current.weather}}</li>
+				<li v-show="current.isRainning">降水量：{{current.jiangshuiliang}}mm</li>
 				<li>气温：{{current.temperature}}℃</li>
 				<li>风速：{{current.windspeed}}m/s</li>
 				<li>风向：{{current.winddirection}}</li>
@@ -195,11 +196,15 @@
 				</li>
 				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
 					<i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
-					<a class="mdui-list-item-content">BMS</a>
+					<a class="mdui-list-item-content" href="./BMS.html">北京气象台</a>
 				</li>
 				<li class="mdui-list-item mdui-ripple">
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
-					<a class="mdui-list-item-content" href="./NMC.html">NMC</a>
+					<a class="mdui-list-item-content" href="./NMC.html">中央气象台</a>
+				</li>
+				<li class="mdui-list-item mdui-ripple">
+					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
+					<a class="mdui-list-item-content" href="./CMDC.html">国家气象信息中心</a>
 				</li>
 				<li class="mdui-list-item mdui-ripple">
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
@@ -285,6 +290,11 @@
 			isAutoDark: false,
 		},
 		async created() {
+			if (localStorage.isAutoDark == "true") {
+				this.isAutoDark = true;
+				document.body.classList.add("mdui-theme-layout-auto");
+				document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
+			}
 			const forecastRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=11");
 			console.log("天气预报：", forecastRes);
 			this.forecastData = forecastRes.data.substr(1, forecastRes.data.length - 2);
@@ -332,6 +342,7 @@
 			};
 
 			//预警信号
+			//处理有缺陷，无法符合业务需求，待重构
 			const warningListRes = await axios.get("http://101.200.145.109:8087/weather/scene/warningPage.do?callback=&pageNo=1&doc=北京市");
 			let warningListTemp = JSON.parse(warningListRes.data.substr(1, warningListRes.data.length - 2)).value;
 			let isWarningOffline = [];
@@ -383,14 +394,9 @@
 				this.refreshTimeChange();
 
 			}, 10000);
-			if (localStorage.isAutoDark == "true") {
-				this.isAutoDark = true;
-				document.body.classList.add("mdui-theme-layout-auto");
-				document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
-			}
-		},
-		mounted() {
-			this.isLoading = false;
+			this.$nextTick(function () {
+				this.isLoading = false;
+			})
 		},
 		methods: {
 			getDistrectInfo() {
@@ -402,6 +408,10 @@
 					winddirection: currentRes.fengx,
 					airpressure: currentRes.qiya,
 					humidity: currentRes.shidu,
+					jiangshuiliang: currentRes.jiangshuiliang,
+				}
+				if (currentRes.jiangshuiliang != "0.0") {
+					this.current.isRainning = true;
 				}
 				if (currentRes.name == "市中心") {
 					this.current.weather = JSON.parse(this.forecastData.Scene).value.name;
