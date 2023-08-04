@@ -57,7 +57,7 @@
 				<a href="#tab2" class="mdui-ripple">3h预报</a>
 				<a href="#tab3" class="mdui-ripple">36h预报</a>
 				<a href="#tab4" class="mdui-ripple">7d预报</a>
-				<a href="#tab5" class="mdui-ripple">雷达图</a>
+				<a href="#tab5" class="mdui-ripple">图像</a>
 			</div>
 		</div>
 		<div class="mdui-progress" v-if="isLoading">
@@ -166,8 +166,13 @@
 			</div>
 		</div>
 
-		<!-- radar -->
+		<!-- radar+云图 -->
 		<div id="tab5" class="mdui-p-a-2">
+
+			<h3>云图(发布时间{{cloudData.datatime}}):</h3>
+			<img class="mdui-img-fluid" :src="cloudData.fileName" />
+
+
 			<h3>{{radar.title}}(发布时间{{radar.datetime}}):</h3>
 			<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" @click="radarAutoPlay()">
 				<i class="mdui-icon material-icons" v-show="!this.isAutoPlay">play_arrow</i>
@@ -288,6 +293,7 @@
 			sevenDaysData: [],
 			isLoading: true,
 			isAutoDark: false,
+			cloudData: {},
 		},
 		async created() {
 			if (localStorage.isAutoDark == "true") {
@@ -340,9 +346,13 @@
 				title: this.radarData[0].title,
 				datetime: this.radarData[0].datetime
 			};
+			//云图
+			const cloudRes = await axios.get("http://101.200.145.109:8087/weather/scene/data.do?callback=&id=5");
+			this.cloudData = JSON.parse(cloudRes.data.substr(1, cloudRes.data.length - 2));
+			this.cloudData.fileName = "http://101.200.145.109:8087/qxj/" + this.cloudData.fileName;
 
 			//预警信号
-			//处理有缺陷，无法符合业务需求，待重构
+			//实现方法有bug，无法符合业务需求，待重构
 			const warningListRes = await axios.get("http://101.200.145.109:8087/weather/scene/warningPage.do?callback=&pageNo=1&doc=北京市");
 			let warningListTemp = JSON.parse(warningListRes.data.substr(1, warningListRes.data.length - 2)).value;
 			let isWarningOffline = [];
