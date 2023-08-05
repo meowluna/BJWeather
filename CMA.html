@@ -18,7 +18,7 @@
 					<i class="mdui-icon material-icons">menu</i>
 				</a>
 				<a href="javascript:;" class="mdui-typo-headline mdui-hidden-xs">B天气</a>
-				<a href="javascript:;" class="mdui-typo-title">国家气象信息中心</a>
+				<a href="javascript:;" class="mdui-typo-title">中国气象局</a>
 
 				<div class="mdui-toolbar-spacer"></div>
 				<div class="mdui-chip">
@@ -63,11 +63,11 @@
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
 					<a class="mdui-list-item-content" href="./NMC.html">中央气象台</a>
 				</li>
-				<li class="mdui-list-item mdui-ripple">
+				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
 					<a class="mdui-list-item-content" href="./CMA.html">中国气象局</a>
 				</li>
-				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
+				<li class="mdui-list-item mdui-ripple">
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
 					<a class="mdui-list-item-content" href="./CMDC.html">国家气象信息中心</a>
 				</li>
@@ -129,8 +129,11 @@
 				document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
 			}
 
-
-			const currentRes = await axios.post("http://data.cma.cn/kbweb/home/live", { lat: 40.34, lon: 116.3667, type: "0", });
+			const currentRes = await axios.get("https://cors-for-bj-weather.vercel.app/api/CMA/now", {
+				params: {
+					stationId: 54511,
+				}
+			});
 			// const curretRes = await axios.post("http://data.cma.cn/weatherGis/web/weather/weatherFcst/getDayNigntData", { staIds: 54511 });
 			this.currentData = currentRes;
 

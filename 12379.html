@@ -65,6 +65,10 @@
 				</li>
 				<li class="mdui-list-item mdui-ripple">
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
+					<a class="mdui-list-item-content" href="./CMA.html">中国气象局</a>
+				</li>
+				<li class="mdui-list-item mdui-ripple">
+					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
 					<a class="mdui-list-item-content" href="./CMDC.html">国家气象信息中心</a>
 				</li>
 				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
@@ -97,11 +101,11 @@
 						<span class="mdui-chip-icon mdui-m-r-1" :style="{backgroundColor:item.signdegree}">
 							<i class="mdui-icon material-icons">error_outline</i>
 						</span>
-						<div class="mdui-panel-item-title">{{item.title}}</div>
+						<div class="mdui-panel-item-title">{{item.headline}}</div>
 						<i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
 					</div>
 					<div class="mdui-panel-item-body">
-						{{item.pubDate}}<br>{{item.description}}<br><br>
+						{{item.sendTime}}<br>{{item.description}}<br><br>
 					</div>
 				</div>
 			</div>
@@ -139,27 +143,25 @@
 				document.body.classList.add("mdui-theme-layout-auto");
 				document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
 			}
-			const warningRes = await axios.get("https://11rsshub.vercel.app/12379")
-			let x2js = new X2JS();
-			let warningData = x2js.xml_str2json(warningRes.data).rss.channel;
-			this.updateTime = warningData.lastBuildDate;
-			for (item in warningData.item) {
-				if (warningData.item[item].title.substr(0, 3) == "北京市") {
-					warningData.item[item].title = warningData.item[item].title.substr(warningData.item[item].title.indexOf("发布") + 2, warningData.item[item].title.length - warningData.item[item].title.indexOf("发布") + 2);
-					if (warningData.item[item].title.match("蓝色")) {
-						warningData.item[item].signdegree = "#2196F3";
-					} else if (warningData.item[item].title.match("黄色")) {
-						warningData.item[item].signdegree = "#fdd835";
-					} else if (warningData.item[item].title.match("橙色")) {
-						warningData.item[item].signdegree = "#FF9800";
-					} else if (warningData.item[item].title.match("红色")) {
-						warningData.item[item].signdegree = "#F44336";
+			const warningRes = await axios.get("https://cors-for-bj-weather.vercel.app/api/12379/index_map_all");
+			eval(warningRes.data.data);
+			this.updateTime = alertData.lastBuildDate;
+			for (item in alertData) {
+				if (alertData[item].sender == "北京市气象台") {
+					if (alertData[item].severity == "blue") {
+						alertData[item].signdegree = "#2196F3";
+					} else if (alertData[item].severity == "yellow") {
+						alertData[item].signdegree = "#fdd835";
+					} else if (alertData[item].severity == "orange") {
+						alertData[item].signdegree = "#FF9800";
+					} else if (alertData[item].severity == "red") {
+						alertData[item].signdegree = "#F44336";
 					}
-					this.warningList.push(warningData.item[item]);
+					this.warningList.push(alertData[item]);
 				}
 			}
 
-			console.log(warningData);
+			console.log(alertData);
 			this.startTime = new Date().getTime();
 			document.addEventListener("visibilitychange", function () {
 				console.log(document.visibilityState, performance.now());
