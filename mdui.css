@@ -1,5 +1,5 @@
 .mdui-list-item-active {
-	color: #1a73e8;
+	/* color: #1a73e8; */
 	background-color: #e8f0fe;
 }
 
@@ -35,3 +35,28 @@
 .mdui-panel-item-title {
 	width: fit-content !important;
 }
+
+.mdui-appbar {
+	box-shadow: none;
+}
+
+.mdui-menu,
+.mdui-table-fluid,
+.mdui-dialog {
+	border-radius: 8px;
+}
+
+/* .mdui-tab-active {
+	#primaryTabs {
+		background-color: #e8f0fe !important;
+		border-radius: 20px;
+	}
+}
+
+#primaryTabs {
+	padding: 4px 24px;
+} */
+
+/* .mdui-tab-indicator {
+	display: none;
+} */

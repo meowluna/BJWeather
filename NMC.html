@@ -9,10 +9,10 @@
 	<link rel="stylesheet" href="./mdui.css" />
 </head>
 
-<body class="mdui-appbar-with-toolbar mdui-appbar-with-tab mdui-theme-accent-pink">
+<body class="mdui-appbar-with-toolbar mdui-appbar-with-tab mdui-theme-accent-pink mdui-drawer-body-left">
 	<div id="app">
 		<!-- mdui appbar+tabbar -->
-		<div class="mdui-appbar mdui-appbar-fixed mdui-color-white">
+		<div class="mdui-appbar mdui-appbar-fixed mdui-color-white mdui-appbar-inset">
 			<div class="mdui-toolbar">
 				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#left-drawer'}">
 					<i class="mdui-icon material-icons">menu</i>
@@ -41,7 +41,7 @@
 					</li>
 				</ul>
 			</div>
-			<div class="mdui-tab" mdui-tab>
+			<div class="mdui-tab mdui-tab-centered" mdui-tab>
 				<a href="#tab1" class="mdui-ripple">当前</a>
 				<a href="#tab2" class="mdui-ripple">雷达图</a>
 			</div>
@@ -54,7 +54,7 @@
 
 
 		<!-- sidebar -->
-		<div class="mdui-drawer mdui-drawer-close mdui-color-theme" id="left-drawer">
+		<div class="mdui-drawer mdui-color-theme mdui-shadow-0 mdui-drawer-full-height" id="left-drawer">
 			<ul class="mdui-list">
 				<li class="mdui-list-item">
 					<a class="mdui-list-item-content">BJWeather</a>
@@ -110,9 +110,19 @@
 				<li>AQI：{{currentAQI.aqi}} {{currentAQI.text}}</li>
 			</ul>
 		</div>
-		<div id="tab2" class="mdui-p-a-2">
-			<h2>华北雷达图:</h2>
-			<img class="mdui-img-fluid" :src="radar.img" />
+		<div id="tab2" class="mdui-p-a-2" style="max-width: 800px;">
+			<div class="mdui-card">
+				<div class="mdui-card-media">
+					<img class="mdui-img-fluid" :src="radar.img" />
+					<div class="mdui-card-media-covered">
+						<div class="mdui-card-primary">
+
+							<div class="mdui-card-primary-title">华北雷达图</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
 		</div>
 
 	</div>

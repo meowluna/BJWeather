@@ -9,10 +9,10 @@
 	<link rel="stylesheet" href="./mdui.css" />
 </head>
 
-<body class="mdui-appbar-with-toolbar mdui-appbar-with-tab mdui-theme-accent-pink">
+<body class="mdui-appbar-with-toolbar mdui-appbar-with-tab mdui-theme-accent-pink mdui-drawer-body-left">
 	<div id="app">
 		<!-- mdui appbar+tabbar -->
-		<div class="mdui-appbar mdui-appbar-fixed mdui-color-white">
+		<div class="mdui-appbar mdui-appbar-fixed mdui-color-white mdui-appbar-inset">
 			<div class="mdui-toolbar">
 				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#left-drawer'}">
 					<i class="mdui-icon material-icons">menu</i>
@@ -52,12 +52,22 @@
 					</li>
 				</ul>
 			</div>
-			<div class="mdui-tab" mdui-tab>
-				<a href="#tab1" class="mdui-ripple">当前</a>
-				<a href="#tab2" class="mdui-ripple">3h预报</a>
-				<a href="#tab3" class="mdui-ripple">36h预报</a>
-				<a href="#tab4" class="mdui-ripple">7d预报</a>
-				<a href="#tab5" class="mdui-ripple">图像</a>
+			<div class="mdui-tab mdui-tab-centered" mdui-tab>
+				<a href="#tab1" class="mdui-ripple">
+					<label>当前</label>
+				</a>
+				<a href="#tab2" class="mdui-ripple">
+					<label>3h预报</label>
+				</a>
+				<a href="#tab3" class="mdui-ripple">
+					<label>36h预报</label>
+				</a>
+				<a href="#tab4" class="mdui-ripple">
+					<label>7d预报</label>
+				</a>
+				<a href="#tab5" class="mdui-ripple">
+					<label>图像</label>
+				</a>
 			</div>
 		</div>
 		<div class="mdui-progress" v-if="isLoading">
@@ -167,41 +177,65 @@
 		</div>
 
 		<!-- radar+云图 -->
-		<div id="tab5" class="mdui-p-a-2">
+		<div id="tab5" class="mdui-p-a-2" style="max-width: 800px;">
+			<div class="mdui-card">
+				<div class="mdui-card-media">
+					<img class="mdui-img-fluid" :src="cloudData.fileName" />
+					<div class="mdui-card-media-covered">
+						<div class="mdui-card-primary">
 
-			<h3>云图(发布时间{{cloudData.datatime}}):</h3>
-			<img class="mdui-img-fluid" :src="cloudData.fileName" />
+							<div class="mdui-card-primary-title">云图</div>
+							<div class="mdui-card-primary-subtitle">发布时间{{cloudData.datatime}}</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="mdui-card">
+				<div class="mdui-card-media">
+					<img class="mdui-img-fluid" :src="radar.img" />
+					<div class="mdui-card-media-covered">
+						<div class="mdui-card-primary">
+
+							<div class="mdui-card-primary-title">{{radar.title}}</div>
+							<div class="mdui-card-primary-subtitle">发布时间{{radar.datetime}}</div>
+						</div>
+					</div>
+				</div>
 
 
-			<h3>{{radar.title}}(发布时间{{radar.datetime}}):</h3>
-			<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" @click="radarAutoPlay()">
-				<i class="mdui-icon material-icons" v-show="!this.isAutoPlay">play_arrow</i>
-				<i class="mdui-icon material-icons" v-show="this.isAutoPlay">pause</i>
-			</button>
-			<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" v-show="radarSelecter!=1"
-				@click="radarSelecter--,reloadRadar()">
-				<i class="mdui-icon material-icons">arrow_back</i>
-			</button>
-			<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" v-show="radarSelecter!=500"
-				@click="radarSelecter++,reloadRadar()">
-				<i class="mdui-icon material-icons">arrow_forward</i>
-			</button>
-			<label class="mdui-slider mdui-slider-discrete" style="max-width: 600px;">
-				<input type="range" step="1" min="1" max="500" v-model="radarSelecter" @change="reloadRadar()" />
-			</label>
+				<div class="mdui-card-actions">
+					<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" @click="radarAutoPlay()">
+						<i class="mdui-icon material-icons" v-show="!this.isAutoPlay">play_arrow</i>
+						<i class="mdui-icon material-icons" v-show="this.isAutoPlay">pause</i>
+					</button>
+					<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" v-show="radarSelecter!=1"
+						@click="radarSelecter--,reloadRadar()">
+						<i class="mdui-icon material-icons">arrow_back</i>
+					</button>
+					<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon"
+						v-show="radarSelecter!=500" @click="radarSelecter++,reloadRadar()">
+						<i class="mdui-icon material-icons">arrow_forward</i>
+					</button>
+					<label class="mdui-slider mdui-slider-discrete">
+						<input type="range" step="1" min="1" max="500" v-model="radarSelecter"
+							@change="reloadRadar()" />
+					</label>
+				</div>
 
-			<img class="mdui-img-fluid" :src="radar.img" />
+			</div>
 		</div>
 
 		<!-- sidebar -->
-		<div class="mdui-drawer mdui-drawer-close mdui-color-theme" id="left-drawer">
+		<div class="mdui-drawer mdui-color-theme mdui-shadow-0 mdui-drawer-full-height" id="left-drawer">
 			<ul class="mdui-list">
 				<li class="mdui-list-item">
 					<a class="mdui-list-item-content">BJWeather</a>
 				</li>
 				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
 					<i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
-					<a class="mdui-list-item-content" href="./BMS.html">北京气象台</a>
+					<div class="mdui-list-item-content" href="./BMS.html">北京气象台</div>
 				</li>
 				<li class="mdui-list-item mdui-ripple">
 					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
