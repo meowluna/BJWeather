@@ -133,137 +133,148 @@
 
 		<!-- 3h -->
 		<div id="tab2" class="mdui-p-a-2">
-			<h3>3小时预报(发布时间{{threeHours.datetime}}):</h3>
-			<div class="mdui-table-fluid tExtra">
-				<table class="mdui-table mdui-table-hoverable">
-					<thead>
-						<tr>
-							<th>时间</th>
-							<th>天气</th>
-							<th>气温</th>
-							<th>风力</th>
-							<th>风向</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(item,index) in threeHours.value" :key="item.hour">
-							<td>{{index}}</td>
-							<td>{{item.wp}}</td>
-							<td>{{item.t}}℃</td>
-							<td>{{item.wspeed}}</td>
-							<td>{{item.wdir}}</td>
-						</tr>
-					</tbody>
-				</table>
+			<div class="mdui-container">
+				<h3>3小时预报(发布时间{{threeHours.datetime}}):</h3>
+				<div class="mdui-table-fluid tExtra">
+					<table class="mdui-table mdui-table-hoverable">
+						<thead>
+							<tr>
+								<th>时间</th>
+								<th>天气</th>
+								<th>气温</th>
+								<th>风力</th>
+								<th>风向</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(item,index) in threeHours.value" :key="item.hour">
+								<td>{{index}}</td>
+								<td>{{item.wp}}</td>
+								<td>{{item.t}}℃</td>
+								<td>{{item.wspeed}}</td>
+								<td>{{item.wdir}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 
 		<!-- 36h -->
 		<div id="tab3" class="mdui-p-a-2">
-			<h3>36小时预报(发布时间{{thirtysixHoursDateTime}}):</h3>
-			<div class="mdui-table-fluid tExtra">
-				<table class="mdui-table mdui-table-hoverable">
-					<thead>
-						<tr>
-							<th>时间</th>
-							<th>天气</th>
-							<th>气温</th>
-							<th>风力</th>
-							<th>风向</th>
-							<th>相对湿度</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(item,index) in thirtysixHours" :key="item.lv">
-							<td>{{item.date}}</td>
-							<td>{{item.weather}}</td>
-							<td>{{item.plain_temp}}</td>
-							<td>{{item.windspeed}}</td>
-							<td>{{item.wind}}</td>
-							<td>{{item.other}}</td>
-						</tr>
-					</tbody>
-				</table>
+			<div class="mdui-container">
+				<h3>36小时预报(发布时间{{thirtysixHoursDateTime}}):</h3>
+				<div class="mdui-table-fluid tExtra">
+					<table class="mdui-table mdui-table-hoverable">
+						<thead>
+							<tr>
+								<th>时间</th>
+								<th>天气</th>
+								<th>气温</th>
+								<th>风力</th>
+								<th>风向</th>
+								<th>相对湿度</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(item,index) in thirtysixHours" :key="item.lv">
+								<td>{{item.date}}</td>
+								<td>{{item.weather}}</td>
+								<td>{{item.plain_temp}}</td>
+								<td>{{item.windspeed}}</td>
+								<td>{{item.wind}}</td>
+								<td>{{item.other}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 
 		<!-- 7d -->
 		<div id="tab4" class="mdui-p-a-2">
-			<h3>7天预报:</h3>
-			<div class="mdui-table-fluid tExtra">
-				<table class="mdui-table mdui-table-hoverable">
-					<thead>
-						<tr>
-							<th>日期</th>
-							<th>时段</th>
-							<th>天气</th>
-							<th>气温</th>
-							<th>风力</th>
-							<th>风向</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(item,index) in sevenDaysData" :key="index">
-							<td>{{item.time}}</td>
-							<td>{{item.Nighttime}}</td>
-							<td>{{item.condition}}</td>
-							<td>{{item.temperature}}℃</td>
-							<td>{{item.windscale}}</td>
-							<td>{{item.winddirection}}</td>
-						</tr>
-					</tbody>
-				</table>
+			<div class="mdui-container">
+				<h3>7天预报:</h3>
+				<div class="mdui-table-fluid tExtra">
+					<table class="mdui-table mdui-table-hoverable">
+						<thead>
+							<tr>
+								<th>日期</th>
+								<th>时段</th>
+								<th>天气</th>
+								<th>气温</th>
+								<th>风力</th>
+								<th>风向</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(item,index) in sevenDaysData" :key="index">
+								<td>{{item.time}}</td>
+								<td>{{item.Nighttime}}</td>
+								<td>{{item.condition}}</td>
+								<td>{{item.temperature}}℃</td>
+								<td>{{item.windscale}}</td>
+								<td>{{item.winddirection}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 
 		<!-- radar+云图 -->
-		<div id="tab5" class="mdui-p-a-2" style="max-width: 800px;">
-			<div class="mdui-card">
-				<div class="mdui-card-media">
-					<img class="mdui-img-fluid" :src="cloudData.fileName" />
-					<div class="mdui-card-media-covered">
-						<div class="mdui-card-primary">
+		<div id="tab5" class="mdui-p-a-2">
+			<div class="mdui-container">
+				<div class=" mdui-grid-list mdui-row-md-2 mdui-row-xs-1">
+					<div class="mdui-col">
+						<div class="mdui-card">
+							<div class="mdui-card-media">
+								<img class="mdui-img-fluid" :src="cloudData.fileName" />
+								<div class="mdui-card-media-covered">
+									<div class="mdui-card-primary">
 
-							<div class="mdui-card-primary-title">云图</div>
-							<div class="mdui-card-primary-subtitle">发布时间{{cloudData.datatime}}</div>
+										<div class="mdui-card-primary-title">云图</div>
+										<div class="mdui-card-primary-subtitle">发布时间{{cloudData.datatime}}</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="mdui-col">
+						<div class="mdui-card">
+							<div class="mdui-card-media">
+								<img class="mdui-img-fluid" :src="radar.img" />
+								<div class="mdui-card-media-covered">
+									<div class="mdui-card-primary">
+
+										<div class="mdui-card-primary-title">{{radar.title}}</div>
+										<div class="mdui-card-primary-subtitle">发布时间{{radar.datetime}}</div>
+									</div>
+								</div>
+							</div>
+							<div class="mdui-card-actions">
+								<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon"
+									@click="radarAutoPlay()">
+									<i class="mdui-icon material-icons" v-show="!this.isAutoPlay">play_arrow</i>
+									<i class="mdui-icon material-icons" v-show="this.isAutoPlay">pause</i>
+								</button>
+								<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon"
+									v-show="radarSelecter!=1" @click="radarSelecter--,reloadRadar()">
+									<i class="mdui-icon material-icons">arrow_back</i>
+								</button>
+								<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon"
+									v-show="radarSelecter!=500" @click="radarSelecter++,reloadRadar()">
+									<i class="mdui-icon material-icons">arrow_forward</i>
+								</button>
+								<label class="mdui-slider mdui-slider-discrete">
+									<input type="range" step="1" min="1" max="500" v-model="radarSelecter"
+										@change="reloadRadar()" />
+								</label>
+							</div>
 						</div>
 					</div>
 				</div>
-
-			</div>
-			<br>
-			<div class="mdui-card">
-				<div class="mdui-card-media">
-					<img class="mdui-img-fluid" :src="radar.img" />
-					<div class="mdui-card-media-covered">
-						<div class="mdui-card-primary">
-
-							<div class="mdui-card-primary-title">{{radar.title}}</div>
-							<div class="mdui-card-primary-subtitle">发布时间{{radar.datetime}}</div>
-						</div>
-					</div>
-				</div>
-
-
-				<div class="mdui-card-actions">
-					<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" @click="radarAutoPlay()">
-						<i class="mdui-icon material-icons" v-show="!this.isAutoPlay">play_arrow</i>
-						<i class="mdui-icon material-icons" v-show="this.isAutoPlay">pause</i>
-					</button>
-					<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon" v-show="radarSelecter!=1"
-						@click="radarSelecter--,reloadRadar()">
-						<i class="mdui-icon material-icons">arrow_back</i>
-					</button>
-					<button class="mdui-btn mdui-color-theme-accent mdui-ripple mdui-btn-icon"
-						v-show="radarSelecter!=500" @click="radarSelecter++,reloadRadar()">
-						<i class="mdui-icon material-icons">arrow_forward</i>
-					</button>
-					<label class="mdui-slider mdui-slider-discrete">
-						<input type="range" step="1" min="1" max="500" v-model="radarSelecter"
-							@change="reloadRadar()" />
-					</label>
-				</div>
-
 			</div>
 		</div>
 
@@ -516,6 +527,7 @@
 					this.current.weather = JSON.parse(this.forecastData.Scene).value.name;
 				}
 			},
+			//播放存在卡顿，可能和网络请求有关？
 			radarAutoPlay() {
 				if (this.isAutoPlay == false) {
 					this.isAutoPlay = true;
