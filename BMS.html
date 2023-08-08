@@ -9,12 +9,12 @@
 	<link rel="stylesheet" href="./mdui.css" />
 </head>
 
-<body class="mdui-appbar-with-toolbar mdui-appbar-with-tab mdui-theme-accent-pink mdui-drawer-body-left">
+<body class="mdui-appbar-with-toolbar mdui-appbar-with-tab mdui-theme-accent-pink">
 	<div id="app">
 		<!-- mdui appbar+tabbar -->
 		<div class="mdui-appbar mdui-appbar-fixed mdui-color-white mdui-appbar-inset">
 			<div class="mdui-toolbar">
-				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#left-drawer'}">
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#left-drawer'}">
 					<i class="mdui-icon material-icons">menu</i>
 				</a>
 				<a href="javascript:;" class="mdui-typo-headline mdui-hidden-xs">BJWeather</a>
@@ -48,6 +48,46 @@
 						<a href="javascript:;" class="mdui-ripple">
 							<i class=" mdui-menu-item-icon mdui-icon material-icons">settings</i>
 							设置
+						</a>
+					</li>
+					<li class="mdui-menu-item" mdui-dialog="{target: '#aboutDialog'}">
+						<a href="javascript:;" class="mdui-ripple">
+							<i class=" mdui-menu-item-icon mdui-icon material-icons">info_outline</i>
+							关于
+						</a>
+					</li>
+				</ul>
+
+				<ul class="mdui-menu" id="left-drawer">
+					<li class="mdui-menu-item mdui-ripple mdui-list-item-active">
+						<a class="mdui-menu-item-content" href="./BMS.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							北京气象台
+						</a>
+					</li>
+					<li class="mdui-menu-item mdui-ripple">
+						<a class="mdui-menu-item-content" href="./NMC.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							中央气象台
+						</a>
+					</li>
+					<li class="mdui-menu-item mdui-ripple">
+						<a class="mdui-menu-item-content" href="./CMA.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							中国气象局
+						</a>
+					</li>
+					<li class="mdui-menu-item mdui-ripple">
+						<a class="mdui-menu-item-content" href="./CMDC.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							国家气象信息中心
+						</a>
+					</li>
+					<li class="mdui-divider"></li>
+					<li class="mdui-menu-item mdui-ripple">
+						<a class="mdui-menu-item-content" href="./12379.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							国家预警信息发布中心
 						</a>
 					</li>
 				</ul>
@@ -191,7 +231,7 @@
 				</div>
 
 			</div>
-
+			<br>
 			<div class="mdui-card">
 				<div class="mdui-card-media">
 					<img class="mdui-img-fluid" :src="radar.img" />
@@ -228,7 +268,7 @@
 		</div>
 
 		<!-- sidebar -->
-		<div class="mdui-drawer mdui-color-theme mdui-shadow-0 mdui-drawer-full-height" id="left-drawer">
+		<!-- <div class="mdui-drawer mdui-color-theme mdui-shadow-0 mdui-drawer-full-height" id="left-drawer">
 			<ul class="mdui-list">
 				<li class="mdui-list-item">
 					<a class="mdui-list-item-content">BJWeather</a>
@@ -254,7 +294,8 @@
 					<a class="mdui-list-item-content" href="./12379.html">国家预警信息发布中心</a>
 				</li>
 			</ul>
-		</div>
+		</div> -->
+
 
 
 
@@ -284,11 +325,21 @@
 		<!-- 设置 -->
 		<div class="mdui-dialog" id="settingsDialog">
 			<div class="mdui-dialog-content">
-				<div class="mdui-dialog-title">设置</div>自动深色模式
+				<div class="mdui-dialog-title">设置</div>
+				自动深色模式
 				<label class="mdui-switch mdui-float-right">
 					<input type="checkbox" v-model="isAutoDark" onclick="app.autoDark()" />
 					<i class="mdui-switch-icon"></i>
 				</label>
+			</div>
+			<div class="mdui-dialog-actions">
+				<button class="mdui-btn mdui-ripple" mdui-dialog-confirm>ok</button>
+			</div>
+		</div>
+
+		<div class="mdui-dialog" id="aboutDialog">
+			<div class="mdui-dialog-content">
+				<div class="mdui-dialog-title">关于</div>
 			</div>
 			<div class="mdui-dialog-actions">
 				<button class="mdui-btn mdui-ripple" mdui-dialog-confirm>ok</button>

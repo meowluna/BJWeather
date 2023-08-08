@@ -1,6 +1,7 @@
 .mdui-list-item-active {
 	/* color: #1a73e8; */
 	background-color: #e8f0fe;
+	border-radius: 20px 20px 20px 20px !important;
 }
 
 .mdui-list-item {
@@ -43,7 +44,7 @@
 .mdui-menu,
 .mdui-table-fluid,
 .mdui-dialog {
-	border-radius: 8px;
+	border-radius: 20px;
 }
 
 /* .mdui-tab-active {
@@ -60,3 +61,15 @@
 /* .mdui-tab-indicator {
 	display: none;
 } */
+
+#left-drawer {
+	border-radius: 20px 20px 20px 20px;
+	padding: 10px;
+	height: fit-content;
+	width: fit-content;
+}
+
+.mdui-menu-item {
+	border-radius: 20px;
+	margin: 5px 0 0 0;
+}
