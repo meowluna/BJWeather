@@ -278,38 +278,6 @@
 			</div>
 		</div>
 
-		<!-- sidebar -->
-		<!-- <div class="mdui-drawer mdui-color-theme mdui-shadow-0 mdui-drawer-full-height" id="left-drawer">
-			<ul class="mdui-list">
-				<li class="mdui-list-item">
-					<a class="mdui-list-item-content">BJWeather</a>
-				</li>
-				<li class="mdui-list-item mdui-ripple mdui-list-item-active">
-					<i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>
-					<div class="mdui-list-item-content" href="./BMS.html">北京气象台</div>
-				</li>
-				<li class="mdui-list-item mdui-ripple">
-					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
-					<a class="mdui-list-item-content" href="./NMC.html">中央气象台</a>
-				</li>
-				<li class="mdui-list-item mdui-ripple">
-					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
-					<a class="mdui-list-item-content" href="./CMA.html">中国气象局</a>
-				</li>
-				<li class="mdui-list-item mdui-ripple">
-					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
-					<a class="mdui-list-item-content" href="./CMDC.html">国家气象信息中心</a>
-				</li>
-				<li class="mdui-list-item mdui-ripple">
-					<i class="mdui-list-item-icon mdui-icon material-icons">star</i>
-					<a class="mdui-list-item-content" href="./12379.html">国家预警信息发布中心</a>
-				</li>
-			</ul>
-		</div> -->
-
-
-
-
 		<!-- 预警 -->
 		<div class="mdui-dialog" id="warningDialog">
 			<div class="mdui-dialog-content">
@@ -510,7 +478,12 @@
 		},
 		methods: {
 			getDistrectInfo() {
+				//api有间歇缺数据问题，需catch error
 				let currentRes = this.distrectData.value[this.distrect];
+				if (currentRes == null) {
+					console.error("分区域数据部分缺失", currentRes)
+					return;
+				}
 				this.current = {
 					datetime: this.distrectData.datetime,
 					temperature: currentRes.wendu,
