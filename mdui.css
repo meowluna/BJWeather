@@ -49,7 +49,8 @@
 .mdui-table-fluid,
 .mdui-dialog,
 .mdui-card,
-.mdui-select-menu {
+.mdui-select-menu,
+.mdui-tab-indicator {
 	border-radius: 15px;
 }
 
@@ -78,4 +79,8 @@
 .mdui-menu-item {
 	border-radius: 20px;
 	margin: 5px 0 0 0;
+}
+
+.mdui-tab-indicator {
+	height: 4px;
 }
