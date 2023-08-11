@@ -37,14 +37,19 @@
 	width: fit-content !important;
 }
 
-.mdui-appbar {
-	box-shadow: none;
+.mdui-appbar,
+.mdui-select-menu,
+.mdui-menu,
+.mdui-dialog,
+.mdui-card {
+	box-shadow: 0 1px 6px 0 rgba(32, 33, 36, .28);
 }
 
 .mdui-menu,
 .mdui-table-fluid,
 .mdui-dialog,
-.mdui-card {
+.mdui-card,
+.mdui-select-menu {
 	border-radius: 15px;
 }
 
