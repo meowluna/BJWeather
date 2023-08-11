@@ -153,7 +153,7 @@
 			eval(warningRes.data.data);
 			this.updateTime = alertData.lastBuildDate;
 			for (item in alertData) {
-				if (alertData[item].sender == "北京市气象台") {
+				if (alertData[item].sender == "北京市气象局") {
 					if (alertData[item].severity == "blue") {
 						alertData[item].signdegree = "#2196F3";
 					} else if (alertData[item].severity == "yellow") {
