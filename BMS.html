@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="./mdui.css" />
 </head>
 
-<body class="mdui-appbar-with-toolbar mdui-appbar-with-tab mdui-theme-accent-pink">
+<body class="mdui-appbar-with-toolbar mdui-appbar-with-tab mdui-theme-accent-blue">
 	<div id="app">
 		<!-- mdui appbar+tabbar -->
 		<div class="mdui-appbar mdui-appbar-fixed mdui-color-white mdui-appbar-inset">
@@ -116,25 +116,27 @@
 
 		<!-- currrent -->
 		<div id="tab1" class="mdui-p-a-2">
-			<select class="mdui-select" id="ddd" v-model="distrect" @change="getDistrectInfo()">
-				<option :value=item.name v-for="(item,index) in distrectData.value">{{item.name}}</option>
-			</select>
-			<h3>当前天气(发布时间{{current.datetime}}):</h3>
-			<ul>
-				<li v-show="this.current.weather">天气：{{current.weather}}</li>
-				<li v-show="current.isRainning">降水量：{{current.jiangshuiliang}}mm</li>
-				<li>气温：{{current.temperature}}℃</li>
-				<li>风速：{{current.windspeed}}m/s</li>
-				<li>风向：{{current.winddirection}}</li>
-				<li>气压：{{current.airpressure}}hPa</li>
-				<li>相对湿度：{{current.humidity}}%</li>
-			</ul>
+			<div class="mdui-container">
+				<select class="mdui-select" id="ddd" v-model="distrect" @change="getDistrectInfo()">
+					<option :value=item.name v-for="(item,index) in distrectData.value">{{item.name}}</option>
+				</select>
+				<h2>当前天气(发布时间{{current.datetime}}):</h2>
+				<ul>
+					<li v-show="this.current.weather">天气：{{current.weather}}</li>
+					<li v-show="current.isRainning">降水量：{{current.jiangshuiliang}}mm</li>
+					<li>气温：{{current.temperature}}℃</li>
+					<li>风速：{{current.windspeed}}m/s</li>
+					<li>风向：{{current.winddirection}}</li>
+					<li>气压：{{current.airpressure}}hPa</li>
+					<li>相对湿度：{{current.humidity}}%</li>
+				</ul>
+			</div>
 		</div>
 
 		<!-- 3h -->
 		<div id="tab2" class="mdui-p-a-2">
 			<div class="mdui-container">
-				<h3>3小时预报(发布时间{{threeHours.datetime}}):</h3>
+				<h2>3小时预报(发布时间{{threeHours.datetime}}):</h2>
 				<div class="mdui-table-fluid tExtra">
 					<table class="mdui-table mdui-table-hoverable">
 						<thead>
@@ -163,7 +165,7 @@
 		<!-- 36h -->
 		<div id="tab3" class="mdui-p-a-2">
 			<div class="mdui-container">
-				<h3>36小时预报(发布时间{{thirtysixHoursDateTime}}):</h3>
+				<h2>36小时预报(发布时间{{thirtysixHoursDateTime}}):</h2>
 				<div class="mdui-table-fluid tExtra">
 					<table class="mdui-table mdui-table-hoverable">
 						<thead>
@@ -194,7 +196,7 @@
 		<!-- 7d -->
 		<div id="tab4" class="mdui-p-a-2">
 			<div class="mdui-container">
-				<h3>7天预报:</h3>
+				<h2>7天预报:</h2>
 				<div class="mdui-table-fluid tExtra">
 					<table class="mdui-table mdui-table-hoverable">
 						<thead>
