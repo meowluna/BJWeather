@@ -100,9 +100,9 @@
 			</div>
 		</div>
 
-		<div class="mdui-container mdui-m-t-2">
+		<div class="mdui-container">
 			<div class="mdui-panel" mdui-panel>
-				<div class="mdui-panel-item" v-for="(item ,index) in this.warningList">
+				<div class="mdui-panel-item mdui-m-t-2" v-for="(item ,index) in this.warningList">
 					<div class="mdui-panel-item-header">
 						<span class="mdui-chip-icon mdui-m-r-1"
 							:style="{backgroundColor:item.signdegree,flexShrink: 0}">
@@ -112,7 +112,9 @@
 						<i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
 					</div>
 					<div class="mdui-panel-item-body">
-						{{item.sendTime}}<br>{{item.description}}<br><br>
+						{{item.sendTime}}<br>
+						发布单位:{{item.sender}}<br>----<br>
+						{{item.description}}
 					</div>
 				</div>
 			</div>
