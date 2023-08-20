@@ -21,7 +21,7 @@
 				<a href="javascript:;" class="mdui-typo-title">国家气象信息中心</a>
 
 				<div class="mdui-toolbar-spacer"></div>
-				<div class="mdui-chip">
+				<div class="mdui-chip" :style="{flexShrink:0}">
 					<span class="mdui-chip-title" :class="{needUpdate:refreshTime.needUpdate}"
 						id="refreshDisplay">{{refreshTime.display}}</span>
 				</div>

@@ -25,7 +25,7 @@
 					mdui-dialog="{target: '#warningDialog'}" v-if="this.warningList.length != 0">
 					<i class="mdui-icon material-icons">error_outline</i>
 				</a>
-				<div class="mdui-chip">
+				<div class="mdui-chip" :style="{flexShrink:0}">
 					<span class="mdui-chip-title" :class="{needUpdate:refreshTime.needUpdate}"
 						id="refreshDisplay">{{refreshTime.display}}</span>
 				</div>
