@@ -278,7 +278,11 @@
 					</div>
 				</div>
 				<div>
-					<video :src="video.src" controls class=".mdui-video-fluid"></video>
+					<select class="mdui-select" id="ddd2" v-model="videoId" @change="getVideo()">
+						<option :value=item.videoid v-for="(item,index) in videoData" :key="item.videoid">
+							{{item.videoname}}</option>
+					</select>
+					<video :src="video.src" controls class="mdui-video-fluid"></video>
 				</div>
 			</div>
 		</div>
@@ -368,6 +372,8 @@
 			isAutoDark: false,
 			cloudData: {},
 			video: {},
+			videoId: "",
+			videoData: {},
 		},
 		async created() {
 			if (localStorage.isAutoDark == "true") {
@@ -433,6 +439,12 @@
 
 			let videoTemp = JSON.parse(videoRes.data.substr(1, videoRes.data.length - 2)).value;
 			console.log("videoTemp", videoTemp);
+			this.videoData = videoTemp;
+			this.$nextTick(function () {
+				console.log('v-for渲染已经完成')
+				var inst = new mdui.Select('#ddd2');
+				inst.handleUpdate();
+			})
 			this.video.src = "http://101.200.145.109:8087/qxj/" + videoTemp[0].videopath;
 			//预警信号
 			//实现方法有bug，无法符合业务需求，待重构
@@ -515,6 +527,9 @@
 				if (currentRes.name == "市中心") {
 					this.current.weather = JSON.parse(this.forecastData.Scene).value.name;
 				}
+			},
+			getVideo() {
+				this.video.src = "http://101.200.145.109:8087/qxj/" + this.videoData.find((el) => el.videoid == this.videoId).videopath
 			},
 			//播放存在卡顿，可能和网络请求有关？
 			radarAutoPlay() {
