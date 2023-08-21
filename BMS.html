@@ -106,7 +106,7 @@
 					<label>7d预报</label>
 				</a>
 				<a href="#tab5" class="mdui-ripple">
-					<label>图像</label>
+					<label>媒体</label>
 				</a>
 			</div>
 		</div>
@@ -277,6 +277,9 @@
 						</div>
 					</div>
 				</div>
+				<div>
+					<video :src="video.src" controls class=".mdui-video-fluid"></video>
+				</div>
 			</div>
 		</div>
 
@@ -364,6 +367,7 @@
 			isLoading: true,
 			isAutoDark: false,
 			cloudData: {},
+			video: {},
 		},
 		async created() {
 			if (localStorage.isAutoDark == "true") {
@@ -421,6 +425,15 @@
 			this.cloudData = JSON.parse(cloudRes.data.substr(1, cloudRes.data.length - 2));
 			this.cloudData.fileName = "http://101.200.145.109:8087/qxj/" + this.cloudData.fileName;
 
+
+
+
+			//每日视频
+			const videoRes = await axios.get("http://101.200.145.109:8087/weather/scenetwo/swqx.do?callback=&pageNo=1");
+
+			let videoTemp = JSON.parse(videoRes.data.substr(1, videoRes.data.length - 2)).value;
+			console.log("videoTemp", videoTemp);
+			this.video.src = "http://101.200.145.109:8087/qxj/" + videoTemp[0].videopath;
 			//预警信号
 			//实现方法有bug，无法符合业务需求，待重构
 			const warningListRes = await axios.get("http://101.200.145.109:8087/weather/scene/warningPage.do?callback=&pageNo=1&doc=北京市");
@@ -477,6 +490,7 @@
 			this.$nextTick(function () {
 				this.isLoading = false;
 			})
+
 		},
 		methods: {
 			getDistrectInfo() {
