@@ -440,12 +440,14 @@
 			let videoTemp = JSON.parse(videoRes.data.substr(1, videoRes.data.length - 2)).value;
 			console.log("videoTemp", videoTemp);
 			this.videoData = videoTemp;
+			this.videoId = this.videoData[0].videoid;
 			this.$nextTick(function () {
 				console.log('v-for渲染已经完成')
 				var inst = new mdui.Select('#ddd2');
 				inst.handleUpdate();
 			})
-			this.video.src = "http://101.200.145.109:8087/qxj/" + videoTemp[0].videopath;
+			this.getVideo();
+			// this.video.src = "http://101.200.145.109:8087/qxj/" + videoTemp[0].videopath;
 			//预警信号
 			//实现方法有bug，无法符合业务需求，待重构
 			const warningListRes = await axios.get("http://101.200.145.109:8087/weather/scene/warningPage.do?callback=&pageNo=1&doc=北京市");
@@ -529,6 +531,7 @@
 				}
 			},
 			getVideo() {
+				console.log("qqqqq", this.videoData.find((el) => el.videoid == this.videoId));
 				this.video.src = "http://101.200.145.109:8087/qxj/" + this.videoData.find((el) => el.videoid == this.videoId).videopath
 			},
 			//播放存在卡顿，可能和网络请求有关？
