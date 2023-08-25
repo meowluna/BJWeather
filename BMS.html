@@ -139,7 +139,7 @@
 			</div>
 		</div>
 
-		<!-- 3h -->
+		<!-- 预报 -->
 		<div id="tab2" class="mdui-p-a-2">
 			<div class="mdui-container">
 				<h2>3小时预报(发布时间{{threeHours.datetime}}):</h2>
@@ -430,12 +430,8 @@
 			this.cloudData = JSON.parse(cloudRes.data.substr(1, cloudRes.data.length - 2));
 			this.cloudData.fileName = "http://101.200.145.109:8087/qxj/" + this.cloudData.fileName;
 
-
-
-
 			//每日视频
 			const videoRes = await axios.get("http://101.200.145.109:8087/weather/scenetwo/swqx.do?callback=&pageNo=1");
-
 			let videoTemp = JSON.parse(videoRes.data.substr(1, videoRes.data.length - 2)).value;
 			console.log("videoTemp", videoTemp);
 			this.videoData = videoTemp;
@@ -534,6 +530,7 @@
 				this.video.src = "http://101.200.145.109:8087/qxj/" + this.videoData.find((el) => el.videoid == this.videoId).videopath
 			},
 			//播放存在卡顿，可能和网络请求有关？
+			//需优化
 			radarAutoPlay() {
 				if (this.isAutoPlay == false) {
 					this.isAutoPlay = true;
