@@ -7,10 +7,206 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
+	<link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css" />
+	<link rel="stylesheet" href="./mdui.css" />
 </head>
 
-<body>
+<body class="mdui-appbar-with-toolbar mdui-theme-accent-pink">
+	<div id="app">
+		<!-- mdui appbar+tabbar -->
+		<div class="mdui-appbar mdui-appbar-fixed mdui-color-white mdui-appbar-inset">
+			<div class="mdui-toolbar">
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#left-drawer'}">
+					<i class="mdui-icon material-icons">menu</i>
+				</a>
+				<a href="javascript:;" class="mdui-typo-headline mdui-hidden-xs">B天气</a>
+				<a href="javascript:;" class="mdui-typo-title">北京气象</a>
 
+				<div class="mdui-toolbar-spacer"></div>
+				<div class="mdui-chip" :style="{flexShrink:0}">
+					<span class="mdui-chip-title" :class="{needUpdate:refreshTime.needUpdate}"
+						id="refreshDisplay">{{refreshTime.display}}</span>
+				</div>
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon">
+					<i class="mdui-icon material-icons" onclick="location.reload()">refresh</i>
+				</a>
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#exmenu'}">
+					<i class="mdui-icon material-icons">more_vert</i>
+				</a>
+				<ul class="mdui-menu" id="exmenu">
+					<li class="mdui-divider"></li>
+					<li class="mdui-menu-item" mdui-dialog="{target: '#settingsDialog'}">
+						<a href="javascript:;" class="mdui-ripple">
+							<i class=" mdui-menu-item-icon mdui-icon material-icons">settings</i>
+							设置
+						</a>
+					</li>
+				</ul>
+				<ul class="mdui-menu" id="left-drawer">
+					<li class="mdui-menu-item mdui-ripple">
+						<a class="mdui-menu-item-content" href="./BMS.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							北京气象台
+						</a>
+					</li>
+					<li class="mdui-menu-item mdui-ripple">
+						<a class="mdui-menu-item-content" href="./NMC.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							中央气象台
+						</a>
+					</li>
+					<li class="mdui-menu-item mdui-ripple">
+						<a class="mdui-menu-item-content" href="./CMA.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							中国气象局
+						</a>
+					</li>
+					<li class="mdui-menu-item mdui-ripple">
+						<a class="mdui-menu-item-content" href="./CMDC.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							国家气象信息中心
+						</a>
+					</li>
+					<li class="mdui-menu-item mdui-ripple mdui-list-item-active">
+						<a class="mdui-menu-item-content" href="./BM.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							北京气象
+						</a>
+					</li>
+					<li class="mdui-menu-item mdui-ripple">
+						<a class="mdui-menu-item-content" href="./weatherol.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							北京气象在线
+						</a>
+					</li>
+					<li class="mdui-divider"></li>
+					<li class="mdui-menu-item mdui-ripple">
+						<a class="mdui-menu-item-content" href="./12379.html">
+							<i class="mdui-menu-item-icon mdui-icon material-icons">move_to_inbox</i>
+							国家预警信息发布中心
+						</a>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+		<div class="mdui-progress" v-if="isLoading">
+			<div class="mdui-progress-indeterminate"></div>
+		</div>
+
+
+
+		<!-- sidebar -->
+
+
+
+		<!-- 设置 -->
+		<div class="mdui-dialog" id="settingsDialog">
+			<div class="mdui-dialog-content">
+				<div class="mdui-dialog-title">设置</div>自动深色模式
+				<label class="mdui-switch mdui-float-right">
+					<input type="checkbox" v-model="isAutoDark" onclick="app.autoDark()" />
+					<i class="mdui-switch-icon"></i>
+				</label>
+			</div>
+			<div class="mdui-dialog-actions">
+				<button class="mdui-btn mdui-ripple" mdui-dialog-confirm>ok</button>
+			</div>
+		</div>
+
+		<div>
+			{{currentData}}
+		</div>
+
+	</div>
+	<script src=" https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js">
+	</script>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+	const app = new Vue({
+		el: "#app",
+		data: {
+			refreshTime: {
+				display: "刚刚刷新",
+				min: 0,
+				secound: 0,
+				needUpdate: false,
+				startTime: 0,
+			},
+			isLoading: true,
+			isAutoDark: false,
+			warningList: [],
+			updateTime: "",
+			currentData: {},
+		},
+		async created() {
+			if (localStorage.isAutoDark == "true") {
+				this.isAutoDark = true;
+				document.body.classList.add("mdui-theme-layout-auto");
+				document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
+			}
+			const currentRes = await axios.get("http://www.bjqxfw.cn:11080/Meteorologicals/Get6HAction.action?areaCode=110000");
+			// const curretRes = await axios.post("http://data.cma.cn/weatherGis/web/weather/weatherFcst/getDayNigntData", { staIds: 54511 });
+			this.currentData = currentRes;
+
+			this.startTime = new Date().getTime();
+			document.addEventListener("visibilitychange", function () {
+				console.log(document.visibilityState, performance.now());
+				if (document.visibilityState == "visible") {
+					app.refreshTimeChange();
+				}
+			});
+			setInterval(() => {
+				this.refreshTimeChange();
+
+			}, 10000);
+
+			this.$nextTick(function () {
+				this.isLoading = false;
+			})
+
+		},
+		methods: {
+			refreshTimeChange() {
+				let timeTemp = (new Date().getTime() - this.startTime) / 1000;
+				console.log("11", timeTemp);
+				if (timeTemp > 10) {
+					app.refreshTime.display = "T+";
+					if (timeTemp / 60 > 30) {
+						app.refreshTime.display = "已过时"
+						app.refreshTime.needUpdate = true;
+					} else {
+						if (Math.floor(timeTemp / 60) > 0) {
+							app.refreshTime.display += Math.floor(timeTemp / 60) + "m";
+						}
+						app.refreshTime.display += Math.floor(timeTemp % 60) + "s";
+					}
+				}
+			},
+			autoDark() {
+				// setTimeout(() => {
+				// this.$nextTick(function () {
+				if (!this.isAutoDark) {
+					document.body.classList.add("mdui-theme-layout-auto");
+					document.querySelector(".mdui-appbar").classList.add("autoDarkAppBar");
+					localStorage.isAutoDark = true;
+				} else {
+					console.log(111);
+					document.body.classList.remove("mdui-theme-layout-auto");
+					document.querySelector(".mdui-appbar").classList.remove("autoDarkAppBar");
+					localStorage.isAutoDark = false;
+				}
+				// })
+				// }, 1000);
+
+			},
+		},
+	});
+
+</script>
 
 </html>
