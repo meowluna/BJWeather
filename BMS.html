@@ -534,7 +534,7 @@
 				console.log("qqqqq", this.videoData.find((el) => el.videoid == this.videoId));
 				this.video.src = "http://101.200.145.109:8087/qxj/" + this.videoData.find((el) => el.videoid == this.videoId).videopath
 			},
-			//播放存在卡顿，可能和网络请求有关？
+			//播放存在卡顿，可能和网络请求有关？ ---暂时通过增大间隔时间解决，这不是一个好方法
 			//需优化
 			radarAutoPlay() {
 				if (this.isAutoPlay == false) {
@@ -551,9 +551,9 @@
 						}
 						this.radarSelecter++;
 						mdui.updateSliders();
-						//@change不能监听更改?采用手动修改
+						//@change不能监听更改?采用手动刷新
 						this.reloadRadar();
-					}, 200);
+					}, 500);
 				} else {
 					this.isAutoPlay = false;
 					clearInterval(this.radarInterval);
