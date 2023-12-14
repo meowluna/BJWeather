@@ -451,15 +451,15 @@
 			console.log("处理过", warningListTemp);
 			for (item in warningListTemp) {
 				if (warningListTemp[item].title.substr(3, 2) == "解除") {
-					isWarningExpired[warningListTemp[item].title.substr(5)] = true;
+					isWarningExpired[warningListTemp[item].title.substr(5, 2)] = true;
 				} else {
-					isWarningExpired[warningListTemp[item].title.substr(5)] = false;
+					isWarningExpired[warningListTemp[item].title.substr(5, 2)] = false;
 				}
 			}
 			warningListTemp = warningListTemp.reverse();
 			for (item in warningListTemp) {
-				if (isWarningExpired[warningListTemp[item].title.substr(5)] == false) {
-					isWarningExpired[warningListTemp[item].title.substr(5)] = true;
+				if (isWarningExpired[warningListTemp[item].title.substr(5, 2)] == false) {
+					isWarningExpired[warningListTemp[item].title.substr(5, 2)] = 3;
 					this.warningList.push(warningListTemp[item]);
 				}
 			}
@@ -472,6 +472,7 @@
 					// let warningMainbodyTemp = JSON.parse(warningTemp.mainbody);
 					// warningMainbodyTemp.title = warningMainbodyTemp.title.substr(5, warningMainbodyTemp.title.length - 1);
 					warningTemp.mainbody = JSON.parse(warningTemp.mainbody);
+					// console.log('////' + warningTemp.title.substr(5, 2) + '//' + isWarningExpired[warningTemp.title.substr(5, 2)])
 					if (temp[warningTemp.mainbody.signclass] != true) {
 						temp[warningTemp.mainbody.signclass] = true;
 						if (warningTemp.mainbody.signrank == "蓝色") {
