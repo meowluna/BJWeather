@@ -338,7 +338,7 @@
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quasar@1.20.2/dist/quasar.umd.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/quasar@1.20.2/dist/quasar.umd.js"></script> -->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script>
@@ -444,45 +444,49 @@
 			this.getVideo();
 			// this.video.src = "http://101.200.145.109:8087/qxj/" + videoTemp[0].videopath;
 			//预警信号
-			//实现方法有bug，无法符合业务需求，待重构
 			const warningListRes = await axios.get("http://101.200.145.109:8087/weather/scene/warningPage.do?callback=&pageNo=1&doc=北京市");
 			let warningListTemp = JSON.parse(warningListRes.data.substr(1, warningListRes.data.length - 2)).value;
-			let isWarningOffline = [];
+			let isWarningExpired = [];
 			warningListTemp = warningListTemp.reverse();
 			console.log("处理过", warningListTemp);
 			for (item in warningListTemp) {
 				if (warningListTemp[item].title.substr(3, 2) == "解除") {
-					isWarningOffline[warningListTemp[item].title.substr(5)] = true;
+					isWarningExpired[warningListTemp[item].title.substr(5)] = true;
 				} else {
-					isWarningOffline[warningListTemp[item].title.substr(5)] = false;
+					isWarningExpired[warningListTemp[item].title.substr(5)] = false;
 				}
 			}
 			warningListTemp = warningListTemp.reverse();
 			for (item in warningListTemp) {
-				if (isWarningOffline[warningListTemp[item].title.substr(5)] == false) {
-					isWarningOffline[warningListTemp[item].title.substr(5)] = true;
+				if (isWarningExpired[warningListTemp[item].title.substr(5)] == false) {
+					isWarningExpired[warningListTemp[item].title.substr(5)] = true;
 					this.warningList.push(warningListTemp[item]);
 				}
 			}
 
 			if (this.warningList.length != 0) {
+				let temp = [];
 				for (item in this.warningList) {
 					const warningRes = await axios.get("http://101.200.145.109:8087/weather/scene/warningbyid.do?callback=&doc=" + this.warningList[item].id);
 					let warningTemp = JSON.parse(warningRes.data.substr(1, warningRes.data.length - 2));
 					// let warningMainbodyTemp = JSON.parse(warningTemp.mainbody);
 					// warningMainbodyTemp.title = warningMainbodyTemp.title.substr(5, warningMainbodyTemp.title.length - 1);
 					warningTemp.mainbody = JSON.parse(warningTemp.mainbody);
-					if (warningTemp.mainbody.signrank == "蓝色") {
-						warningTemp.signdegree = "#2196F3";
-					} else if (warningTemp.mainbody.signrank == "黄色") {
-						warningTemp.signdegree = "#fdd835";
-					} else if (warningTemp.mainbody.signrank == "橙色") {
-						warningTemp.signdegree = "#FF9800";
-					} else if (warningTemp.mainbody.signrank == "红色") {
-						warningTemp.signdegree = "#F44336";
+					if (temp[warningTemp.mainbody.signclass] != true) {
+						temp[warningTemp.mainbody.signclass] = true;
+						if (warningTemp.mainbody.signrank == "蓝色") {
+							warningTemp.signdegree = "#2196F3";
+						} else if (warningTemp.mainbody.signrank == "黄色") {
+							warningTemp.signdegree = "#fdd835";
+						} else if (warningTemp.mainbody.signrank == "橙色") {
+							warningTemp.signdegree = "#FF9800";
+						} else if (warningTemp.mainbody.signrank == "红色") {
+							warningTemp.signdegree = "#F44336";
+						}
+						this.warningData.push(warningTemp);
+						console.log(warningTemp);
 					}
-					this.warningData.push(warningTemp);
-					console.log(warningTemp);
+
 				}
 			}
 			this.startTime = new Date().getTime();
@@ -564,7 +568,7 @@
 			},
 			refreshTimeChange() {
 				let timeTemp = (new Date().getTime() - this.startTime) / 1000;
-				console.log("11", timeTemp);
+				//console.log("11", timeTemp);
 				if (timeTemp > 10) {
 					app.refreshTime.display = "T+";
 					if (timeTemp / 60 > 30) {
